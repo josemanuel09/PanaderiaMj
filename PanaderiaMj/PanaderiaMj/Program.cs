@@ -7,6 +7,7 @@ using PanaderiaMj.Components.Account;
 using PanaderiaMj.DAL;
 using PanaderiaMj.Data;
 using PanaderiaMj.Service;
+using Radzen;
 
 namespace PanaderiaMj
 {
@@ -45,6 +46,8 @@ namespace PanaderiaMj
             builder.Services.AddScoped<InsumosService>();
             builder.Services.AddScoped<ProveedoresService>();
             builder.Services.AddScoped<EmpleadosService>();
+            builder.Services.AddScoped<NotificationService>();
+
 
             var ConStr = builder.Configuration.GetConnectionString("ConStr");
             builder.Services.AddDbContext<Contexto>(op => op.UseSqlite(ConStr));

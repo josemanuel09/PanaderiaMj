@@ -3,8 +3,10 @@
 @inject NavigationManager navigationManager
 @inject InsumosService insumosService
 @inject IJSRuntime IJSRuntime
+@inject NotificationService NotificationService
 @rendermode InteractiveServer
 
+<RadzenNotification />
 <PageTitle>Crear Producto</PageTitle>
 <EditForm Model="producto" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
@@ -154,6 +156,9 @@
     public Productos producto { get; set; } = new Productos();
     public ProductosDetalle productosDetalle { get; set; } = new ProductosDetalle();
     public List<Insumos> InsumosList { get; set; } = new List<Insumos>();
+    public List<ProductosDetalle> InsumosAgregados { get; set; } = new List<ProductosDetalle>();
+    public List<ProductosDetalle> InsumosEliminados { get; set; } = new List<ProductosDetalle>();
+
     public bool Condicion { get; set; } = false;
 
 
@@ -165,28 +170,113 @@
     }
     public async Task Guardar()
     {
+        // Verificar si hay detalles agregados
+        if (producto.ProductosDetalle.Count == 0)
+        {
+            // Mostrar mensaje de error
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Debe agregar al menos un detalle para guardar el producto.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
+            return;
+        }
+
+        // Guardar el producto si pasa la validación
         var Guardo = await productoservice.Guardar(producto);
+        if (!Guardo) { return; }
+        InsumosList = await insumosService.Listar(t => true);
+
+        foreach (var InsumoAgregado in InsumosAgregados)
+        {
+            var insumo = InsumosList.FirstOrDefault(I => I.InsumoId == InsumoAgregado.InsumoId);
+            if (insumo != null)
+            {
+                insumo.CantidadDisponible -= InsumoAgregado.Cantidad * producto.CantidadAProducir;
+                await insumosService.Guardar(insumo);
+            }
+        }
+
+        foreach (var InsumoEliminado in InsumosEliminados)
+        {
+            var insumo = InsumosList.FirstOrDefault(I => I.InsumoId == InsumoEliminado.InsumoId);
+            if (insumo != null)
+            {
+                insumo.CantidadDisponible += InsumoEliminado.Cantidad * producto.CantidadAProducir;
+                await insumosService.Guardar(insumo);
+            }
+        }
+        InsumosAgregados = new List<ProductosDetalle>();
+        InsumosEliminados = new List<ProductosDetalle>();
+
+        // Mostrar mensaje de éxito
+        var mensajeExito = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Éxito",
+                Detail = "El producto se guardó exitosamente.",
+                Duration = 5000
+            };
+        NotificationService.Notify(mensajeExito);
     }
+
+
+
     public void AgregarDetalle()
     {
         if (productosDetalle.InsumoId > 0 && productosDetalle.Cantidad > 0)
         {
+            // Agregar detalle si pasa la validación
             producto.ProductosDetalle.Add(productosDetalle);
+            InsumosAgregados.Add(productosDetalle);
+            InsumosEliminados.Remove(productosDetalle);
             productosDetalle = new ProductosDetalle();
+
+            // Mostrar mensaje de éxito
+            var mensajeExito = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Éxito",
+                    Detail = "El detalle se agregó con éxito.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeExito);
+        }
+        else
+        {
+            // Mostrar mensaje de error si falta información en el detalle
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Debe completar la información del detalle correctamente para agregarlo.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
         }
     }
+
+
     public void EliminarDetalle(ProductosDetalle detalle)
     {
         producto.ProductosDetalle.Remove(detalle);
+        InsumosEliminados.Add(detalle);
+        InsumosAgregados.Remove(detalle);
     }
     public void Nuevo()
     {
         producto = new Productos();
         productosDetalle = new ProductosDetalle();
+        InsumosAgregados = new List<ProductosDetalle>();
+        InsumosEliminados = new List<ProductosDetalle>();
+
     }
     public void Atras()
     {
-        navigationManager.NavigateTo("/MenuProductos");
+        navigationManager.NavigateTo("/IndexProducto");
     }
 
 }

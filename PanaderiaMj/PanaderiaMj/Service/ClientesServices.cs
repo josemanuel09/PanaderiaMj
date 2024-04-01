@@ -19,6 +19,16 @@ namespace PanaderiaMj.Service
             _contexto.Clientes.Add(cliente);
             return await _contexto.SaveChangesAsync() > 0;
         }
+        public async Task<bool> ValidarNombre(string nombre)
+        {
+            var ClienteExistente = await _contexto.Clientes.AnyAsync(c => c.Nombre == nombre);
+            return ClienteExistente;
+        }
+        public async Task<bool> ValidarCedula(string cedula)
+        {
+            var CedulaExistente = await _contexto.Clientes.AnyAsync(c => c.Cedula == cedula);
+            return CedulaExistente;
+        }
 
         public async Task<bool> Modificar(Clientes cliente)
         {

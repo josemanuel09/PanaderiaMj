@@ -2,7 +2,10 @@
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject ClientesServices clienteservice
+@inject IJSRuntime jsRuntime
+@inject NotificationService NotificationService
 
+<RadzenNotification />
 <EditForm Model="cliente" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="card" style="max-width: 1000px; margin: 0 auto;">
@@ -78,8 +81,6 @@
     public int ClienteId { get; set; }
     public Clientes cliente { get; set; } = new Clientes();
     public string Mensaje = " ";
-    private bool nombreexistente = false;
-    private bool cedulaexistente = false;
     private bool Guardo = false;
 
     protected override async Task OnInitializedAsync()
@@ -101,10 +102,49 @@
             this.cliente = clienteEncontrado;
         }
     }
+
+
     public async Task Guardar()
     {
+        var nombreExistente = await clienteservice.ValidarNombre(cliente.Nombre);
+        if (nombreExistente)
+        {
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "El nombre ya existe.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensaje);
+            return;
+        }
+
+        var cedulaExistente = await clienteservice.ValidarCedula(cliente.Cedula);
+        if (cedulaExistente)
+        {
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "La cédula ya existe.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensaje);
+            return;
+        }
+
+        // Guardar el cliente si pasa las validaciones
         await clienteservice.Guardar(cliente);
         Guardo = true;
+        var mensajeExito = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Éxito",
+                Detail = "Cliente guardado exitosamente.",
+                Duration = 5000
+            };
+        NotificationService.Notify(mensajeExito);
     }
 
     void Atras()

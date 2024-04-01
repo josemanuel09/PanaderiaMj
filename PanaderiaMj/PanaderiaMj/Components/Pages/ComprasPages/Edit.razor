@@ -5,6 +5,7 @@
 @inject InsumosService insumosService
 @inject ProveedoresService proveedoresService
 @inject IJSRuntime jsRuntime
+@inject NotificationService NotificationService
 @rendermode InteractiveServer
 
 <EditForm Model="compra" OnValidSubmit="Guardar">
@@ -153,6 +154,8 @@
     </div>
 </EditForm>
 
+<RadzenNotification />
+
 @code {
     [Parameter]
     public int CompraId { get; set; }
@@ -161,44 +164,114 @@
     public Compras compra { get; set; } = new Compras();
     public ComprasDetalle compraDetalle { get; set; } = new ComprasDetalle();
     public bool Condicion { get; set; } = false;
-
+    public List<ComprasDetalle> InsumosAgregados { get; set; } = new List<ComprasDetalle>();
+    public List<ComprasDetalle> InsumosEliminados { get; set; } = new List<ComprasDetalle>();
     protected override async Task OnInitializedAsync()
     {
         InsumosList = await insumosService.Listar(t => true);
         ProveedoresList = await proveedoresService.Listar(t => true);
         compra.FechaPedida = DateTime.Now;
+        compra = await comprasService.Buscar(CompraId);
     }
+
     public async Task Guardar()
     {
         var Guardado = await comprasService.Guardar(compra);
+        if (!Guardado)
+        {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Hubo un problema al guardar la compra. Por favor, inténtelo de nuevo más tarde.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
+            return;
+        }
+        InsumosList = await insumosService.Listar(t => true);
+
+        foreach (var InsumoAgregado in InsumosAgregados)
+        {
+            var insumo = InsumosList.FirstOrDefault(I => I.InsumoId == InsumoAgregado.InsumoId);
+            if (insumo != null)
+            {
+                insumo.CantidadDisponible -= InsumoAgregado.Cantidad;
+                await insumosService.Guardar(insumo);
+            }
+        }
+
+        foreach (var InsumoEliminado in InsumosEliminados)
+        {
+            var insumo = InsumosList.FirstOrDefault(I => I.InsumoId == InsumoEliminado.InsumoId);
+            if (insumo != null)
+            {
+                insumo.CantidadDisponible += InsumoEliminado.Cantidad;
+                await insumosService.Guardar(insumo);
+            }
+        }
+        InsumosAgregados = new List<ComprasDetalle>();
+        InsumosEliminados = new List<ComprasDetalle>();
+
+        var mensajeExito = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Éxito",
+                Detail = "La compra se ha guardado correctamente.",
+                Duration = 5000
+            };
+        NotificationService.Notify(mensajeExito);
     }
+
     public void AgregarDetalle()
     {
         if (compraDetalle.InsumoId != 0 && compraDetalle.Cantidad != 0 && compraDetalle.Precio != 0)
         {
             compra.ComprasDetalle.Add(compraDetalle);
             compra.MontoTotal += compraDetalle.Cantidad * compraDetalle.Precio;
+            InsumosAgregados.Add(compraDetalle);
+            InsumosEliminados.Remove(compraDetalle);
             compraDetalle = new ComprasDetalle();
+            var MensajeExito = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Éxito",
+                    Detail = "Detalle agregado correctamente.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(MensajeExito);
         }
         else
         {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Debe ingresar un insumo, una cantidad y un precio válidos.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
             return;
         }
     }
+
     public void EliminarDetalle(ComprasDetalle detalle)
     {
         compra.ComprasDetalle.Remove(detalle);
         compra.MontoTotal -= detalle.Cantidad * detalle.Precio;
+        InsumosEliminados.Add(detalle);
+        InsumosAgregados.Remove(detalle);
     }
     public void Nuevo()
     {
         compra = new Compras();
         compraDetalle = new ComprasDetalle();
+        InsumosAgregados = new List<ComprasDetalle>();
+        InsumosEliminados = new List<ComprasDetalle>();
     }
+
     public void Atras()
     {
-        navigationManager.NavigateTo("/IndexCompra");
+        navigationManager.NavigateTo("/MenuCompras");
     }
-
-
 }

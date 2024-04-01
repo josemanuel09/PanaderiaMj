@@ -3,8 +3,10 @@
 @inject ProveedoresService proveedoresService
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
+@inject NotificationService NotificationService
 @rendermode InteractiveServer
 
+<RadzenNotification />
 <PageTitle>Eliminar Proveedor</PageTitle>
 <div class="container">
     <div class="card shadow-header">
@@ -80,11 +82,38 @@
     {
         if (!await proveedoresService.Existe(proveedor.ProveedorId))
         {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "El proveedor que intenta eliminar no existe.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
             return;
         }
+
         if (await proveedoresService.Eliminar(proveedor))
         {
-            Volver();
+            var mensajeExito = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Éxito",
+                    Detail = "El proveedor se ha eliminado correctamente.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeExito);
+        }
+        else
+        {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "No se pudo eliminar el proveedor.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
         }
     }
 

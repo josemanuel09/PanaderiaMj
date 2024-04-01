@@ -1,26 +1,55 @@
-﻿@page "/DeleteEmpleados/{EmpleadoId:int}"
-@*@inject EmpleadosService empleadosService*@
+﻿@page "/DeleteEmpleado/{EmpleadoId:int}"
+@inject EmpleadosService empleadosService
+@inject NavigationManager navigationManager
+@inject NotificationService notificationService
+@rendermode InteractiveServer
 
-<div class="card empleado-card">
-    <div class="card-header empleado-card-header">
-        <h1>Eliminar Empleado</h1>
-    </div>
-    <div class="card-body empleado-card-body">
-        @if (empleado != null)
-        {
-            <div class="empleado-details">
-                <h2>Empleado ID: @empleado.EmpleadoId</h2>
-                <p><strong>Nombre:</strong> @empleado.Nombre</p>
-                <p><strong>Teléfono:</strong> @empleado.Telefono</p>
-                <p><strong>Dirección:</strong> @empleado.Direccion</p>
-            </div>
-
-            <button class="btn btn-danger" @onclick="EliminarEmpleado">Eliminar Empleado</button>
-        }
-        else
-        {
-            <p>La información del empleado no está disponible o ya ha sido eliminada.</p>
-        }
+<RadzenNotification />
+<PageTitle>Eliminar Empleado</PageTitle>
+<div class="container">
+    <div class="card shadow-header">
+        <!-- Header -->
+        <div class="card-header">
+            <h3><strong>Eliminar Empleado</strong></h3>
+        </div>
+        <!-- Cuerpo -->
+        <div class="card-body">
+            @if (empleado != null)
+            {
+                <div class="row">
+                    <div class="col-8">
+                        <div class="col-md-11">
+                            <h3 class="text-center"><strong>Datos del Empleado</strong></h3>
+                            <div class="border-primmary border border-2 borde">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Columna para los datos del empleado -->
+                                        <div class="col-12">
+                                            <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                                <li><strong>Empleado ID: @empleado.EmpleadoId</strong></li>
+                                                <li><strong>Nombre: @empleado.Nombre</strong></li>
+                                                <li><strong>Teléfono: @empleado.Telefono</strong></li>
+                                                <li><strong>Dirección: @empleado.Direccion</strong></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button type="button" class="btn btn-outline-danger" @onclick="EliminarEmpleado"><i class="bi bi-trash-fill"></i> Eliminar</button>
+                        <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <p>La información del empleado no está disponible o ya ha sido eliminada.</p>
+            }
+        </div>
     </div>
 </div>
 
@@ -32,24 +61,42 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Aquí deberías llamar al servicio para obtener los detalles del empleado
-        // empleado = await empleadosService.Buscar(EmpleadoId);
+        empleado = await empleadosService.Buscar(EmpleadoId);
     }
 
     private async Task EliminarEmpleado()
     {
-        // Aquí deberías llamar al servicio para eliminar el empleado
-        // if (empleado != null)
-        // {
-        //     var response = await empleadosService.Eliminar(empleado);
-        //     if (response)
-        //     {
-        //         // Eliminación exitosa, redirigir a la página de empleados o realizar otra acción deseada
-        //     }
-        //     else
-        //     {
-        //         // Error al eliminar el empleado, manejar según sea necesario
-        //     }
-        // }
+        if (empleado != null)
+        {
+            var response = await empleadosService.Eliminar(empleado);
+            if (response)
+            {
+                var mensajeExito = new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Summary = "Éxito",
+                        Detail = "Empleado eliminado exitosamente.",
+                        Duration = 5000
+                    };
+                notificationService.Notify(mensajeExito);
+
+            }
+            else
+            {
+                var mensajeError = new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error",
+                        Detail = "Error al eliminar el empleado.",
+                        Duration = 5000
+                    };
+                notificationService.Notify(mensajeError);
+            }
+        }
+    }
+
+    private void Volver()
+    {
+        navigationManager.NavigateTo("/IndexEmpleados");
     }
 }

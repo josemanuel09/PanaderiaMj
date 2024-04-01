@@ -3,10 +3,11 @@
 @inject ProductosServices productosService
 @inject NavigationManager navigationManager
 @inject IJSRuntime IJSRuntime
+@inject NotificationService NotificationService
 @rendermode InteractiveServer
 
+<RadzenNotification />
 <PageTitle>Eliminar Producto</PageTitle>
-
 <div class="container">
     <div class="card shadow-header">
         <!-- Header -->
@@ -69,11 +70,42 @@
     {
         if (!await productosService.Existe(ProductoId))
         {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "El producto no existe.",
+                    Duration = 5000
+                };
+
+            NotificationService.Notify(mensajeError);
             return;
         }
+
         if (await productosService.Eliminar(producto))
         {
+            var mensajeExito = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Éxito",
+                    Detail = "El producto se eliminó con éxito.",
+                    Duration = 5000
+                };
+
+            NotificationService.Notify(mensajeExito);
             Volver();
+        }
+        else
+        {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "No se pudo eliminar el producto.",
+                    Duration = 5000
+                };
+
+            NotificationService.Notify(mensajeError);
         }
     }
 

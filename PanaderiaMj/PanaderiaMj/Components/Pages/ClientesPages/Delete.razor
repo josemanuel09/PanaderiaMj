@@ -3,8 +3,10 @@
 @inject ClientesServices clienteservice
 @inject NavigationManager navigationManager
 @inject IJSRuntime IJSRuntime
+@inject NotificationService NotificationService
 @rendermode InteractiveServer
 
+<RadzenNotification />
 <PageTitle>Detalles de Cliente</PageTitle>
 <div class="container">
     <div class="card shadow-header">
@@ -86,11 +88,38 @@
     {
         if (!await clienteservice.Existe(cliente.ClienteId))
         {
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "El cliente no existe.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensaje);
             return;
         }
+
         if (await clienteservice.Eliminar(this.cliente))
         {
-            Volver();
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Éxito",
+                    Detail = "Cliente eliminado exitosamente.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensaje);
+        }
+        else
+        {
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Error al eliminar el cliente.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensaje);
         }
     }
 

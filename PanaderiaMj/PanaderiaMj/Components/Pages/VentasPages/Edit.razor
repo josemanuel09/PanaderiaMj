@@ -1,15 +1,16 @@
 ﻿@page "/EditVentas"
+@page "/EditVentas/{VentaId:int}"
 @inject VentasService ventasService
 @inject ClientesServices clientesService
 @inject ProductosServices productosServices
 @inject NavigationManager navigationManager
 @inject IJSRuntime IJSRuntime
+@inject NotificationService NotificationService
 @rendermode InteractiveServer
 
-
+<RadzenNotification />
 <EditForm Model="ventas" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
-
     <div class="card" style="max-width: 1000px; left: 50%; transform: translate(-50%);">
         <!-- Encabezado de la Página -->
         <div class="card-header" style="background-color: #5D5C61">
@@ -20,7 +21,7 @@
                     </div>
                 </div>
                 <div class="col-9">
-                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Crear Venta</strong></h1>
+                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Editar Venta</strong></h1>
                 </div>
             </div>
         </div>
@@ -28,14 +29,14 @@
 
         <div class="card-body">
             <!-- Id y botón buscar -->
-            <div class="row">
-                <div class="col-6">
-                    <label for="txtId" class="form-label">Venta Id:</label>
-                    <div class="input-group">
-                        <input type="number" id="txtId" class="form-control" @bind-value="ventas.VentaId">
-                    </div>
-                </div>
+            @* <div class="row">
+            <div class="col-6">
+            <label for="txtId" class="form-label">Venta Id:</label>
+            <div class="input-group">
+            <input type="number" id="txtId" class="form-control" @bind-value="ventas.VentaId">
             </div>
+            </div>
+            </div> *@
             <div class="row">
                 <!-- Cliente y Concepto -->
                 <div class="col-6">
@@ -97,6 +98,12 @@
                             <div class="col-4">
                                 <label for="txtCantidad" class="form-label"> Cantidad:</label>
                                 <input type="number" id="txtCantidad" class="form-control" @bind-value="ventasDetalle.Cantidad">
+                                <ValidationMessage For="@(() => ventasDetalle.Cantidad)" />
+                            </div>
+                            <div class="col-4">
+                                <label for="txtPrecio" class="form-label"> Precio:</label>
+                                <input type="number" id="txtPrecio" class="form-control" @bind-value="ventasDetalle.Precio">
+                                <ValidationMessage For="@(() => ventasDetalle.Precio)" />
                             </div>
                             <div class="col-4 d-flex align-items-end">
                                 <button name="btnAgregar" id="btnAgregar" class="btn btn-primary col-2" @onclick="AgregarDetalle" type="button">
@@ -114,6 +121,7 @@
                         <tr>
                             <th>Producto</th>
                             <th>Cantidad</th>
+                            <th>Precio</th>
                             <th>Total</th>
                             <th></th>
                         </tr>
@@ -124,6 +132,8 @@
                             <tr>
                                 <td>@detalleVenta.ProductoId</td>
                                 <td>@detalleVenta.Cantidad</td>
+                                <td>@detalleVenta.Precio</td>
+                                <td>@(detalleVenta.Cantidad * detalleVenta.Precio)</td>
                                 <td>
                                     <button name="Btn" id="Btn" class="btn btn-danger mr-2" type="button" @onclick="@(() => EliminarDetalle(detalleVenta))">
                                         <span class="bi bi-trash"></span>
@@ -135,9 +145,9 @@
                 </table>
             </div>
             <div class="row">
-                <!-- Monto -->
+                <!-- Monto total -->
                 <div class="col-6">
-                    <label class="form-label"> Total = $@ventas.MontoTotal</label>
+                    <label class="form-label"> Monto Total: $@ventas.DetalleVentas.Sum(d => d.Cantidad * d.Precio)</label>
                 </div>
             </div>
         </div>
@@ -167,6 +177,9 @@
     public VentasDetalle ventasDetalle { get; set; } = new VentasDetalle();
     public bool Condicion { get; set; } = false;
 
+    // Listas para productos agregados y eliminados
+    public List<VentasDetalle> ProductosAgregados { get; set; } = new List<VentasDetalle>();
+    public List<VentasDetalle> ProductosEliminados { get; set; } = new List<VentasDetalle>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -176,29 +189,96 @@
     }
     public async Task Guardar()
     {
+        if (ventas.DetalleVentas.Count == 0)
+        {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "No se puede guardar una venta sin productos agregados.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
+            return;
+        }
+
         var Guardo = await ventasService.Guardar(ventas);
+
+        if (Guardo)
+        {
+            // Actualizar inventario
+            foreach (var detalleVenta in ventas.DetalleVentas)
+            {
+                if (!ProductosAgregados.Contains(detalleVenta))
+                {
+                    var producto = await productosServices.Buscar(detalleVenta.ProductoId);
+
+                    if (producto != null)
+                    {
+                        producto.CantidadAProducir -= detalleVenta.Cantidad;
+                        await productosServices.Guardar(producto);
+                    }
+                }
+            }
+            var mensajeExito = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Éxito",
+                    Detail = "Venta guardada exitosamente.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeExito);
+            Nuevo();
+        }
+        else
+        {
+            var mensajeErrorGuardar = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Error al guardar la venta. Por favor, inténtalo de nuevo.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeErrorGuardar);
+        }
     }
     public void AgregarDetalle()
     {
-        if (ventasDetalle.ProductoId > 0 && ventasDetalle.Cantidad > 0)
+        if (ventasDetalle.ProductoId > 0 && ventasDetalle.Cantidad > 0 && ventasDetalle.Precio > 0)
         {
+            ProductosAgregados.Add(ventasDetalle);
             ventas.DetalleVentas.Add(ventasDetalle);
             ventasDetalle = new VentasDetalle();
+        }
+        else
+        {
+            var mensajeWarning = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Warning,
+                    Summary = "Advertencia",
+                    Detail = "Por favor, completa los campos Producto, Cantidad y Precio para agregar un detalle.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeWarning);
         }
     }
     public void EliminarDetalle(VentasDetalle detalle)
     {
+        if (!ProductosAgregados.Contains(detalle))
+        {
+            ProductosEliminados.Add(detalle);
+        }
         ventas.DetalleVentas.Remove(detalle);
     }
     public void Nuevo()
     {
         ventas = new Ventas();
         ventasDetalle = new VentasDetalle();
+        ProductosAgregados.Clear();
+        ProductosEliminados.Clear();
     }
     public void Atras()
     {
-        navigationManager.NavigateTo("/IndexVentas");
+        navigationManager.NavigateTo("/MenuVentas");
     }
-
-
 }

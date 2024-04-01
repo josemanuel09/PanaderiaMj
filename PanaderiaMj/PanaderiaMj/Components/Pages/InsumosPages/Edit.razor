@@ -1,15 +1,18 @@
 ﻿@page "/EditInsumo"
 @page "/EditInsumo/{InsumoId:int}"
-@rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject InsumosService insumoservice
+@inject NotificationService NotificationService
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveServer
 
-<EditForm Model="insumo" OnValidSubmit="Guardar">
+<RadzenNotification />
+<EditForm Model="insumo" OnValidSubmit="Guardar" FormName="InsumoForm">
     <DataAnnotationsValidator />
     <div class="card" style="max-width: 1000px; margin: 0 auto;">
         <div class="card-header" style="background-color: #5D5C61; color: white; text-align: center;">
             <img src="/Images/clientes.png" alt="Titulo" style="max-width: 50%; height: auto; margin-bottom: 10px;">
-            <h1>Crear Insumo</h1>
+            <h1>Editar Insumo</h1>
         </div>
 
         <div class="card-body">
@@ -31,24 +34,18 @@
             </div>
         </div>
         <div class="card-footer text-center" style="background-color: #5D5C61;">
-            <button type="button" class="btn btn-success bi bi-floppy-fill" @onclick="Guardar">Guardar</button>
+            <button type="submit" class="btn btn-success bi bi-floppy-fill">Guardar</button>
             <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Atras" type="button">
                 <span class="bi bi-arrow-return-left"></span>Volver Atrás
             </button>
         </div>
     </div>
-
-
 </EditForm>
 
 @code {
     [Parameter]
     public int InsumoId { get; set; }
     public Insumos insumo { get; set; } = new Insumos();
-    public string Mensaje = " ";
-    private bool nombreexistente = false;
-    private bool cedulaexistente = false;
-    private bool Guardo = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,25 +54,61 @@
             this.insumo.InsumoId = InsumoId;
             await this.Buscar();
         }
-
     }
+
     public async Task Buscar()
     {
-        var clienteEncontrado = await insumoservice.Buscar(insumo.InsumoId);
+        var insumoEncontrado = await insumoservice.Buscar(InsumoId);
 
-        if (clienteEncontrado != null)
+        if (insumoEncontrado != null)
         {
-            this.insumo = clienteEncontrado;
+            this.insumo = insumoEncontrado;
         }
     }
+
     public async Task Guardar()
     {
-        await insumoservice.Guardar(insumo);
-        Guardo = true;
+        if (ValidateNombre())
+        {
+            if (await CheckNombreRepetido())
+            {
+                await insumoservice.Guardar(insumo);
+                var mensajeExito = new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Summary = "Éxito",
+                        Detail = "Insumo guardado exitosamente.",
+                        Duration = 5000
+                    };
+                NotificationService.Notify(mensajeExito);
+            }
+            else
+            {
+                var mensajeError = new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error",
+                        Detail = "El nombre del insumo ya existe.",
+                        Duration = 5000
+                    };
+                NotificationService.Notify(mensajeError);
+            }
+        }
+    }
+
+    private bool ValidateNombre()
+    {
+        return !string.IsNullOrWhiteSpace(insumo.Nombre);
+    }
+
+    private async Task<bool> CheckNombreRepetido()
+    {
+        var insumoExistente = await insumoservice.Buscar(insumo.InsumoId);
+        return insumoExistente == null;
     }
 
     void Atras()
     {
-        Navigation.NavigateTo("/IndexInsumo");
+        Navigation.NavigateTo("/MenuInsumos");
     }
 }

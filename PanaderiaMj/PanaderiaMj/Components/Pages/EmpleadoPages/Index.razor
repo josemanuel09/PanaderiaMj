@@ -1,5 +1,9 @@
 ﻿@page "/IndexEmpleados"
-@* Aquí deberías inyectar el servicio de empleados si es necesario *@
+@inject EmpleadosService empleadoService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject NotificationService NotificationService
+@rendermode InteractiveServer
 
 <div class="card" style="max-width: 1400px; margin: 40px auto;">
     <div class="card-header" style="background-color: #5D5C61;">
@@ -41,18 +45,38 @@
         <table class="table mt-3">
             <thead>
                 <tr>
+                    <th scope="col" style="width: 160px;">Empleado Id</th>
                     <th scope="col" style="width: 160px;">Nombre</th>
                     <th scope="col" style="width: 160px;">Teléfono</th>
                     <th scope="col" style="width: 160px;">Dirección</th>
+                    <th scope="col" style="width: 160px;">Ver</th>
+                    <th scope="col" style="width: 160px;">Editar</th>
+                    <th scope="col" style="width: 160px;">Eliminar</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var empleado in ListaEmpleados)
                 {
                     <tr>
+                        <td>@empleado.EmpleadoId</td>
                         <td>@empleado.Nombre</td>
                         <td>@empleado.Telefono</td>
                         <td>@empleado.Direccion</td>
+                        <td>
+                            <div style="text-align:center">
+                                <a href="/ViewEmpleados/@empleado.EmpleadoId" class="btn btn-outline-primary bi bi-eye"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="text-align:center">
+                                <a href="/EditEmpleados/@empleado.EmpleadoId" class="btn btn-outline-warning bi bi-pencil"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="text-align:center">
+                                <a href="/DeleteEmpleado/@empleado.EmpleadoId" class="btn btn-outline-danger bi bi-trash"></a>
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -61,23 +85,36 @@
 </div>
 
 @code {
-    List<Empleados> ListaEmpleados = new List<Empleados>();
-
-    // Aquí deberías inyectar el servicio de empleados si es necesario
-
+    public List<Empleados> ListaEmpleados { get; set; } = new List<Empleados>();
+    public int Opcion { get; set; } = 0;
+    public int EmpleadosId { get; set; }
+    public string Nombre { get; set; }
+   
     protected override async Task OnInitializedAsync()
     {
-        // Aquí deberías cargar la lista de empleados desde el servicio
-        // ListaEmpleados = await empleadoService.Listar(e => true) ?? new List<Empleado>();
+        await CargarClientes();
     }
 
-    public async Task Guardar()
+    public async Task CargarClientes()
     {
-        // Lógica para guardar un empleado
+        ListaEmpleados = await empleadoService.Listar(t => true);
+        
     }
 
     public async Task Buscar()
     {
-        // Lógica para buscar empleados
+
+        switch (Opcion)
+        {
+           
+            case 1:
+                ListaEmpleados = await empleadoService.Listar(t => t.EmpleadoId == EmpleadosId );
+                break;
+            case 2:
+                ListaEmpleados = await empleadoService.Listar(t => t.Nombre.ToLower().Contains(Nombre.ToLower()));
+                break;
+            default:
+                break;
+        }
     }
 }
