@@ -4,9 +4,10 @@
 @inject NavigationManager navigationManager
 @inject InsumosService insumosService
 @inject IJSRuntime IJSRuntime
+@inject NotificationService NotificationService
 @rendermode InteractiveServer
 
-<PageTitle>Crear Producto</PageTitle>
+<PageTitle>Editar Producto</PageTitle>
 <EditForm Model="producto" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="card" style="max-width: 1000px; left: 50%; transform: translate(-50%);">
@@ -18,20 +19,13 @@
                     </div>
                 </div>
                 <div class="col-9">
-                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Crear Producto</strong></h1>
+                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Editar Producto</strong></h1>
                 </div>
             </div>
         </div>
 
         <!--Id-->
         <div class="card-body">
-            @* <div class="row">
-            <label class="form-label">Producto Id</label>
-            <div class="input-group">
-            <InputNumber class="form-control" @bind-Value="producto.ProductoId" />
-            </div>
-            </div> *@
-
             <div class="row">
                 <div class="col-6">
                     <label class="form-label">Nombre Producto</label>
@@ -52,7 +46,7 @@
                 </div>
                 <div class="col-6">
                     <label class="form-label">Precio Producto</label>
-                    <InputNumber class="form-control" @bind-Value="producto.PrecioProducto" />\
+                    <InputNumber class="form-control" @bind-Value="producto.PrecioProducto" />
                     <ValidationMessage For="@(() => producto.PrecioProducto)" />
                 </div>
             </div>
@@ -151,39 +145,121 @@
     public Productos producto { get; set; } = new Productos();
     public ProductosDetalle productosDetalle { get; set; } = new ProductosDetalle();
     public List<Insumos> InsumosList { get; set; } = new List<Insumos>();
+    public List<ProductosDetalle> InsumosAgregados { get; set; } = new List<ProductosDetalle>();
+    public List<ProductosDetalle> InsumosEliminados { get; set; } = new List<ProductosDetalle>();
+
     public bool Condicion { get; set; } = false;
+    int CantidadOriginal = 0;
 
 
     protected override async Task OnInitializedAsync()
     {
         InsumosList = await insumosService.Listar(t => true);
         producto.FechaCreacion = DateTime.Now;
-
+        producto = await productoservice.Buscar(ProductoId);
+        CantidadOriginal = producto.CantidadAProducir;
+        InsumosAgregados = producto.ProductosDetalle.ToList();
     }
     public async Task Guardar()
     {
+        if (producto.ProductosDetalle.Count == 0)
+        {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Debe agregar al menos un detalle para guardar el producto.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
+            return;
+        }
+
         var Guardo = await productoservice.Guardar(producto);
+        if (Guardo)
+        {
+            var mensajeExito = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Éxito",
+                    Detail = "El producto se ha guardado correctamente.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeExito);
+        }
+
+        InsumosList = await insumosService.Listar(t => true);
+        var multiplicador = producto.CantidadAProducir - CantidadOriginal;
+        foreach (var InsumoAgregado in InsumosAgregados)
+        {
+            var insumo = InsumosList.FirstOrDefault(I => I.InsumoId == InsumoAgregado.InsumoId);
+            if (insumo != null)
+            {
+                insumo.CantidadDisponible -= InsumoAgregado.Cantidad * multiplicador;
+                await insumosService.Guardar(insumo);
+            }
+        }
+
+        foreach (var InsumoEliminado in InsumosEliminados)
+        {
+            var insumo = InsumosList.FirstOrDefault(I => I.InsumoId == InsumoEliminado.InsumoId);
+            if (insumo != null)
+            {
+                insumo.CantidadDisponible += InsumoEliminado.Cantidad * multiplicador;
+                await insumosService.Guardar(insumo);
+            }
+        }
+        Nuevo();
+        Atras();
     }
     public void AgregarDetalle()
     {
-        if (productosDetalle.InsumoId > 0 && productosDetalle.Cantidad > 0)
+        if (productosDetalle.InsumoId <= 0 || productosDetalle.Cantidad <= 0)
         {
-            producto.ProductosDetalle.Add(productosDetalle);
-            productosDetalle = new ProductosDetalle();
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Debe ingresar un insumo y una cantidad válida.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
+            return;
         }
+        else
+        {
+            var mensajeExito = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Exito",
+                    Detail = "El detalle se agrego correctamente.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeExito);
+            return;
+        }
+
+        producto.ProductosDetalle.Add(productosDetalle);
+        InsumosAgregados.Add(productosDetalle);
+        InsumosEliminados.Remove(productosDetalle);
+        productosDetalle = new ProductosDetalle();
     }
     public void EliminarDetalle(ProductosDetalle detalle)
     {
         producto.ProductosDetalle.Remove(detalle);
+        InsumosEliminados.Add(detalle);
+        InsumosAgregados.Remove(detalle);
     }
     public void Nuevo()
     {
         producto = new Productos();
         productosDetalle = new ProductosDetalle();
+        InsumosAgregados = new List<ProductosDetalle>();
+        InsumosEliminados = new List<ProductosDetalle>();
     }
+
     public void Atras()
     {
         navigationManager.NavigateTo("/IndexProducto");
     }
-
 }
