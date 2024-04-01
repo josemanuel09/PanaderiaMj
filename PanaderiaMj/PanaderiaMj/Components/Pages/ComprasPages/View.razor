@@ -11,11 +11,9 @@
     var proveedor = ProveedoresList.FirstOrDefault(p => p.ProveedorId == compra.ProveedorId);
     <div class="container">
         <div class="card shadow-lg">
-            <!-- Header -->
             <div class="card-header">
                 <h3><strong>Detalles de Compra</strong></h3>
             </div>
-            <!-- Body -->
             <div class="card-body">
                 <div class="row">
                     <div class="col-8">
@@ -24,7 +22,6 @@
                             <div class="border-primary border border-2 border-primmary">
                                 <div class="card-body">
                                     <div class="row">
-                                        <!-- Columna para los datos de la compra -->
                                         <div class="col-12">
                                             <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
                                                 <li><strong>CompraId:</strong> @compra.CompraId</li>

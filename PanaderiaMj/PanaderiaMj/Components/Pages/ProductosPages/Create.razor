@@ -211,7 +211,6 @@
         InsumosAgregados = new List<ProductosDetalle>();
         InsumosEliminados = new List<ProductosDetalle>();
 
-        // Mostrar mensaje de éxito
         var mensajeExito = new NotificationMessage
             {
                 Severity = NotificationSeverity.Success,
@@ -228,13 +227,11 @@
     {
         if (productosDetalle.InsumoId > 0 && productosDetalle.Cantidad > 0)
         {
-            // Agregar detalle si pasa la validación
             producto.ProductosDetalle.Add(productosDetalle);
             InsumosAgregados.Add(productosDetalle);
             InsumosEliminados.Remove(productosDetalle);
             productosDetalle = new ProductosDetalle();
 
-            // Mostrar mensaje de éxito
             var mensajeExito = new NotificationMessage
                 {
                     Severity = NotificationSeverity.Success,
@@ -246,7 +243,6 @@
         }
         else
         {
-            // Mostrar mensaje de error si falta información en el detalle
             var mensajeError = new NotificationMessage
                 {
                     Severity = NotificationSeverity.Error,

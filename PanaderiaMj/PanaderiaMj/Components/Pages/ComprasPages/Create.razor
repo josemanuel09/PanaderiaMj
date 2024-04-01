@@ -78,7 +78,6 @@
                     <input type="text" id="txtObservaciones" class="form-control" @bind-value="compra.Observaciones">
                 </div>
             </div>
-            <!-- Agregar Detalle -->
             <div class="row">
                 <div class="col-12 mt-3">
                     <div class="card card-header">
@@ -116,7 +115,6 @@
                     </div>
                 </div>
             </div>
-            <!-- Tabla detalle -->
             <div class="table-responsive mt-3">
                 <table class="table table-bordered">
                     <thead>
@@ -153,9 +151,8 @@
             <DataAnnotationsValidator />
         </div>
 
-        <!-- Pie de página con botones -->
         <div class="card-footer text-center fs-5" style="background-color: #5D5C61">
-            <!-- Botones -->
+
             <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Nuevo" type="button">
                 <span class="bi bi-plus-circle"></span> Nuevo
             </button>
@@ -189,7 +186,6 @@
     }
     public async Task Guardar()
     {
-        // Validar que la lista de detalles de compra no esté vacía
         if (compra.ComprasDetalle.Count == 0)
         {
             var mensajeError = new NotificationMessage
