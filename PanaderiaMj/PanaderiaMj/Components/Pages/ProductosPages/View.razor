@@ -1,4 +1,4 @@
-﻿@page "/ViewProducto"
+﻿@page "/ViewProductos"
 @page "/ViewProductos/{ProductoId:int}"
 @inject ProductosServices productosService
 @inject InsumosService insumosService
@@ -27,8 +27,8 @@
                                             <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
                                                 <li><strong>ProductoId:</strong> @producto.ProductoId</li>
                                                 <li><strong>Nombre:</strong> @producto.Nombre</li>
-                                                <li><strong>Descripcion:</strong> @producto.Descripcion</li>
-                                                <li><strong>Fecha Creacion:</strong> @producto.FechaCreacion</li>
+                                                <li><strong>Descripci&oacute;n:</strong> @producto.Descripcion</li>
+                                                <li><strong>Fecha Creaci&oacute;n:</strong> @producto.FechaCreacion</li>
                                                 <li><strong>Precio Producto:</strong> @producto.PrecioProducto</li>
                                             </ul>
                                         </div>
@@ -90,6 +90,6 @@ else
     }
     public void Volver()
     {
-        navigationManager.NavigateTo("/IndexProducto");
+        navigationManager.NavigateTo("/IndexProductos");
     }
 }

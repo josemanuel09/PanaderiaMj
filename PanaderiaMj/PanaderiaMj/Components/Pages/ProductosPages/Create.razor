@@ -1,4 +1,4 @@
-﻿@page "/CreateProducto"
+﻿@page "/CreateProductos"
 @inject ProductosServices productoservice
 @inject NavigationManager navigationManager
 @inject InsumosService insumosService
@@ -40,14 +40,14 @@
                     <ValidationMessage For="@(() => producto.Nombre)" />
                 </div>
                 <div class="col-6">
-                    <label class="form-label">Descripcion</label>
+                    <label class="form-label">Descripci&oacute;n</label>
                     <InputText class="form-control" @bind-Value="producto.Descripcion" />
                     <ValidationMessage For="@(() => producto.Descripcion)" />
                 </div>
             </div>
             <div class="row">
                 <div class="col-6">
-                    <label class="form-label">Fecha Creacion</label>
+                    <label class="form-label">Fecha Creaci&oacute;n</label>
                     <InputDate class="form-control" @bind-Value="producto.FechaCreacion" />
                     <ValidationMessage For="@(() => producto.FechaCreacion)" />
                 </div>
@@ -170,10 +170,8 @@
     }
     public async Task Guardar()
     {
-        // Verificar si hay detalles agregados
         if (producto.ProductosDetalle.Count == 0)
         {
-            // Mostrar mensaje de error
             var mensajeError = new NotificationMessage
                 {
                     Severity = NotificationSeverity.Error,
@@ -276,7 +274,7 @@
     }
     public void Atras()
     {
-        navigationManager.NavigateTo("/IndexProducto");
+        navigationManager.NavigateTo("/MenuProductos");
     }
 
 }

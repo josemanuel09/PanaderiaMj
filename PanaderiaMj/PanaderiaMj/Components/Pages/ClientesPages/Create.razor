@@ -1,4 +1,4 @@
-﻿@page "/CreateCliente"
+﻿@page "/CreateClientes"
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject ClientesServices clienteservice
@@ -37,14 +37,14 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Cédula:</label>
+                        <label>C&eacute;dula:</label>
                         <InputText @bind-Value="cliente.Cedula" class="form-control" />
                         <ValidationMessage For="@(() => cliente.Cedula)" />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Teléfono:</label>
+                        <label>Tel&eacute;fono:</label>
                         <InputText @bind-Value="cliente.Telefono" class="form-control" />
                         <ValidationMessage For="@(() => cliente.Telefono)" />
                     </div>
@@ -58,7 +58,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Dirección:</label>
+                        <label>Direcci&oacute;n:</label>
                         <InputText @bind-Value="cliente.Direccion" class="form-control" />
                         <ValidationMessage For="@(() => cliente.Direccion)" />
                     </div>
@@ -80,7 +80,6 @@
     [Parameter]
     public int ClienteId { get; set; }
     public Clientes cliente { get; set; } = new Clientes();
-    public string Mensaje = " ";
     private bool Guardo = false;
 
     protected override async Task OnInitializedAsync()

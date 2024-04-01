@@ -1,9 +1,9 @@
-﻿@page "/ViewCompra/{CompraId:int}"
+﻿@page "/ViewCompras/{CompraId:int}"
 @inject ComprasService comprasService
 @inject InsumosService insumosService
 @inject ProveedoresService proveedoresService
 @inject NavigationManager navigationManager
-
+@rendermode InteractiveServer
 <PageTitle>Detalles de Compra</PageTitle>
 
 @if (compra != null)
@@ -29,7 +29,7 @@
                                             <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
                                                 <li><strong>CompraId:</strong> @compra.CompraId</li>
                                                 <li><strong>Proveedor:</strong> @(proveedor != null ? proveedor.Nombre : "No encontrado")</li>
-                                                <li><strong>Método de Pago:</strong> @compra.MetodoDePago</li>
+                                                <li><strong>M&eacute;todo de Pago:</strong> @compra.MetodoDePago</li>
                                                 <li><strong>Fecha Pedida:</strong> @compra.FechaPedida</li>
                                                 <li><strong>Observaciones:</strong> @compra.Observaciones</li>
                                                 <li><strong>Monto Total:</strong> @compra.MontoTotal</li>
@@ -103,6 +103,6 @@ else
 
     public void Volver()
     {
-        navigationManager.NavigateTo("/IndexCompra");
+        navigationManager.NavigateTo("/IndexCompras");
     }
 }

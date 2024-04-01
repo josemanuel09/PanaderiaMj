@@ -1,5 +1,5 @@
-﻿@page "/DeleteInsumo"
-@page "/DeleteInsumo/{InsumoId:int}"
+﻿@page "/DeleteInsumos"
+@page "/DeleteInsumos/{InsumoId:int}"
 @inject InsumosService insumosService
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
@@ -15,7 +15,7 @@
             <h3><strong>Eliminar Insumo</strong></h3>
         </div>
         <div class="card-header">
-            <h3 class="text-danger">¿Estás seguro de que quieres eliminar el insumo?</h3>
+            <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar el insumo?</h3>
         </div>
         <!-- Cuerpo -->
         <div class="card-body">
@@ -115,6 +115,6 @@
 
     public void Volver()
     {
-        navigationManager.NavigateTo("/IndexInsumo");
+        navigationManager.NavigateTo("/IndexInsumos");
     }
 }

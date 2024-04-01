@@ -1,5 +1,5 @@
-﻿@page "/EditInsumo"
-@page "/EditInsumo/{InsumoId:int}"
+﻿@page "/EditInsumos"
+@page "/EditInsumos/{InsumoId:int}"
 @inject NavigationManager Navigation
 @inject InsumosService insumoservice
 @inject NotificationService NotificationService
@@ -109,6 +109,6 @@
 
     void Atras()
     {
-        Navigation.NavigateTo("/MenuInsumos");
+        Navigation.NavigateTo("/IndexInsumos");
     }
 }

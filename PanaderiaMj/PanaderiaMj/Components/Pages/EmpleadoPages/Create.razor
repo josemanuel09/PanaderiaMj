@@ -1,38 +1,71 @@
-﻿@page "/CreateEmpleado"
-@inject NavigationManager Navigation
-@inject InsumosService insumoservice
+﻿@page "/CreateEmpleados"
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject EmpleadosService empleadosService
 @inject NotificationService NotificationService
+@rendermode InteractiveServer
 
-<EditForm Model="insumo" OnValidSubmit="Guardar">
+<RadzenNotification />
+<EditForm Model="empleado" OnValidSubmit="Guardar" FormName="EditForm">
     <DataAnnotationsValidator />
-    <div class="card" style="max-width: 1000px; margin: 0 auto;">
-        <div class="card-header" style="background-color: #5D5C61; color: white; text-align: center;">
-            <img src="/Images/clientes.png" alt="Titulo" style="max-width: 50%; height: auto; margin-bottom: 10px;">
-            <h1>Crear Insumo</h1>
-        </div>
 
+    <div class="card" style="max-width: 1000px; left: 50%; transform: translate(-50%);">
+        <!-- Encabezado de la Página -->
+        <div class="card-header" style="background-color: #5D5C61">
+            <div class="row" style="flex-direction: row; align-items: center;">
+                <div class="col-3">
+                    <div style="width: 100%; display: flex; justify-content: center;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png" alt="pan" style="max-width: 100%; height: auto;">
+                    </div>
+                </div>
+                <div class="col-9">
+                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Crear Empleado</strong></h1>
+                </div>
+            </div>
+        </div>
         <div class="card-body">
+            <div class="row">
+                @* <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="EmpleadoId">Empleado Id:</label>
+                        <input type="text" class="form-control" id="EmpleadoId" @bind="empleado.EmpleadoId" />
+                    </div>
+                </div> *@
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Nombre">Nombre:</label>
+                        <input type="text" class="form-control" id="Nombre" @bind="empleado.Nombre" />
+                        <ValidationMessage For="@(() => empleado.Nombre)" />
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Nombre:</label>
-                        <InputText @bind-Value="insumo.Nombre" class="form-control" />
-                        <ValidationMessage For="@(() => insumo.Nombre)" />
+                        <label for="Direccion">Direcci&oacute;n:</label>
+                        <input type="text" class="form-control" id="Direccion" @bind="empleado.Direccion" />
+                        <ValidationMessage For="@(() => empleado.Direccion)" />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Cantidad Disponible:</label>
-                        <InputNumber @bind-Value="insumo.CantidadDisponible" class="form-control" />
-                        <ValidationMessage For="@(() => insumo.CantidadDisponible)" />
+                        <label for="Telefono">Tel&eacute;fono:</label>
+                        <input type="text" class="form-control" id="Telefono" @bind="empleado.Telefono" />
+                        <ValidationMessage For="@(() => empleado.Telefono)" />
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card-footer text-center" style="background-color: #5D5C61;">
-            <button type="submit" class="btn btn-success bi bi-floppy-fill">Guardar</button>
-            <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Atras" type="button">
-                <span class="bi bi-arrow-return-left"></span>Volver Atrás
+        <div class="card-footer text-center fs-5" style="background-color: #5D5C61">
+            <!-- Botones -->
+            <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Nuevo" type="button">
+                <span class="bi bi-plus-circle"></span> Nuevo
+            </button>
+            <button name="btnGuardar" id="btnGuardar" class="btn btn-success mr-2" type="button">
+                <span class="bi bi-download" @onclick="Guardar"></span> Guardar
+            </button>
+            <button name="btnEliminar" id="btnEliminar" class="btn btn-secondary" @onclick="Atras" type="button">
+                <span class="bi bi-arrow-left-square-fill"></span> Volver Atrás
             </button>
         </div>
     </div>
@@ -40,71 +73,68 @@
 
 @code {
     [Parameter]
-    public int InsumoId { get; set; }
-    public Insumos insumo { get; set; } = new Insumos();
+    public int EmpleadoId { get; set; }
+    public Empleados empleado { get; set; } = new Empleados();
+    public string Mensaje = " ";
+    private bool Guardo = false;
 
     protected override async Task OnInitializedAsync()
     {
-        if (InsumoId > 0)
+        if (EmpleadoId > 0)
         {
-            this.insumo.InsumoId = InsumoId;
+            this.empleado.EmpleadoId = EmpleadoId;
             await this.Buscar();
         }
-    }
 
+    }
     public async Task Buscar()
     {
-        var insumoEncontrado = await insumoservice.Buscar(InsumoId);
+        var clienteEncontrado = await empleadosService.Buscar(empleado.EmpleadoId);
 
-        if (insumoEncontrado != null)
+        if (clienteEncontrado != null)
         {
-            this.insumo = insumoEncontrado;
+            this.empleado = clienteEncontrado;
         }
     }
+
 
     public async Task Guardar()
     {
-        if (ValidateNombre())
+        var nombreExistente = await empleadosService.ValidarNombre(empleado.Nombre);
+        if (nombreExistente)
         {
-            if (await CheckNombreRepetido())
-            {
-                await insumoservice.Guardar(insumo);
-                var mensajeExito = new NotificationMessage
-                    {
-                        Severity = NotificationSeverity.Success,
-                        Summary = "Éxito",
-                        Detail = "Insumo guardado exitosamente.",
-                        Duration = 5000
-                    };
-                NotificationService.Notify(mensajeExito);
-            }
-            else
-            {
-                var mensajeError = new NotificationMessage
-                    {
-                        Severity = NotificationSeverity.Error,
-                        Summary = "Error",
-                        Detail = "El nombre del insumo ya existe.",
-                        Duration = 5000
-                    };
-                NotificationService.Notify(mensajeError);
-            }
+            var mensaje = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "El nombre ya existe.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensaje);
+            return;
         }
-    }
 
-    private bool ValidateNombre()
-    {
-        return !string.IsNullOrWhiteSpace(insumo.Nombre);
-    }
 
-    private async Task<bool> CheckNombreRepetido()
+
+        // Guardar el cliente si pasa las validaciones
+        await empleadosService.Guardar(empleado);
+        Guardo = true;
+        var mensajeExito = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Éxito",
+                Detail = "Empleado guardado exitosamente.",
+                Duration = 5000
+            };
+        NotificationService.Notify(mensajeExito);
+    }
+    public void Nuevo()
     {
-        var insumoExistente = await insumoservice.Buscar(insumo.InsumoId);
-        return insumoExistente == null;
+        empleado = new Empleados();
     }
 
     void Atras()
     {
-        Navigation.NavigateTo("/MenuInsumos");
+        NavigationManager.NavigateTo("MenusEmpleados");
     }
 }

@@ -1,5 +1,5 @@
-﻿@page "/ViewInsumo"
-@page "/ViewInsumo/{InsumoId:int}"
+﻿@page "/ViewInsumos"
+@page "/ViewInsumos/{InsumoId:int}"
 @inject InsumosService insumosService
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
@@ -70,6 +70,6 @@
 
     public void Volver()
     {
-        navigationManager.NavigateTo("/IndexInsumo");
+        navigationManager.NavigateTo("/IndexInsumos");
     }
 }

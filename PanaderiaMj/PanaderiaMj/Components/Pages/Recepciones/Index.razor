@@ -1,4 +1,4 @@
-﻿@page "/IndexRecepcion"
+﻿@page "/IndexRecepciones"
 @rendermode InteractiveServer
 @inject RecepcionesServices recepcionesServices
 
@@ -9,7 +9,7 @@
                 <img src="/Images/CrearRecepcion.png" alt="pan" style="max-width: 50%; height: auto;">
             </div>
             <div class="col-9">
-                <h1 style="text-align: center; color: #FFFFFF;"><strong>Consulta de Ventas</strong></h1>
+                <h1 style="text-align: center; color: #FFFFFF;"><strong>Consulta de Recepciones</strong></h1>
             </div>
         </div>
     </div>
@@ -21,7 +21,7 @@
                 <label>Filtrar Por</label>
                 <select @bind="Opcion" class="form-select">
                     <option value="0">Todo</option>
-                    <option value="1">RecepcionId</option>
+                    <option value="1">Recepci&oacute;n Id</option>
                     <option value="2">Concepto</option>
                 </select>
             </div>
@@ -62,12 +62,12 @@
         <table class="table table-striped table-bordered mt-4">
             <thead>
                 <tr>
-                    <th scope="col" style="width: 90px;">RecepcionId</th>
+                    <th scope="col" style="width: 90px;">Recepci&oacute;n Id</th>
                     <th scope="col" style="width: 160px;">Producto</th>
                     <th scope="col" style="width: 160px;">Concepto</th>
                     <th scope="col" style="width: 160px;">Cantidad</th>
                     <th scope="col" style="width: 150px;">Fecha</th>
-                    <th scope="col" style="width: 150px;">Cedula</th>
+                    <th scope="col" style="width: 150px;">C&eacute;dula</th>
                     <th scope="col" style="width: 160px;">Fecha</th>
                     <th scope="col" style="width: 100px;">Ver</th>
                     <th scope="col" style="width: 100px;">Editar</th>
@@ -86,17 +86,17 @@
                        
                         <td>
                             <div style="text-align:center">
-                                <a href="/ViewCliente/@recepcion.RecepcionId" class="btn btn-outline-primary bi bi-eye"></a>
+                                <a href="/ViewRecepciones/@recepcion.RecepcionId" class="btn btn-outline-primary bi bi-eye"></a>
                             </div>
                         </td>
                         <td>
                             <div style="text-align: center;">
-                                <a href="/EditarCliente/@recepcion.RecepcionId" class="btn btn-outline-warning bi bi-pencil"></a>
+                                <a href="/EditRecepciones/@recepcion.RecepcionId" class="btn btn-outline-warning bi bi-pencil"></a>
                             </div>
                         </td>
                         <td>
                             <div style="text-align: center;">
-                                <a href="/DeleteCliente/@recepcion.RecepcionId" class="btn btn-outline-danger bi bi-trash-fill"></a>
+                                <a href="/DeleteRecepciones/@recepcion.RecepcionId" class="btn btn-outline-danger bi bi-trash-fill"></a>
                             </div>
                         </td>
                     </tr>

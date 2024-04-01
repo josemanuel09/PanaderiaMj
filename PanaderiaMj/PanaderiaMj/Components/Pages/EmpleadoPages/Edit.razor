@@ -26,12 +26,12 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-6">
+                @* <div class="col-md-6">
                     <div class="form-group">
                         <label for="EmpleadoId">Empleado Id:</label>
                         <input type="text" class="form-control" id="EmpleadoId" @bind="empleado.EmpleadoId" />
                     </div>
-                </div>
+                </div> *@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="Nombre">Nombre:</label>
@@ -43,14 +43,14 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="Direccion">Dirección:</label>
+                        <label for="Direccion">Direcci&oacute;n:</label>
                         <input type="text" class="form-control" id="Direccion" @bind="empleado.Direccion" />
                         <ValidationMessage For="@(() => empleado.Direccion)" />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="Telefono">Teléfono:</label>
+                        <label for="Telefono">Tel&eacute;fono:</label>
                         <input type="text" class="form-control" id="Telefono" @bind="empleado.Telefono" />
                         <ValidationMessage For="@(() => empleado.Telefono)" />
                     </div>
@@ -136,6 +136,6 @@
 
     void Atras()
     {
-        NavigationManager.NavigateTo("MenusEmpleados");
+        NavigationManager.NavigateTo("IndexEmpleados");
     }
 }

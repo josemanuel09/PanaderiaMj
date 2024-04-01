@@ -41,6 +41,7 @@
                 <div class="col-6">
                     <label for="txtCliente" class="form-label"> Cliente:</label>
                     <InputSelect class="form-select" @bind-Value="ventas.ClienteId">
+                        <option value="0">Seleccione un cliente</option>
                         @foreach (var cliente in ClientesList)
                         {
                             <option value="@cliente.ClienteId">@cliente.Nombre @cliente.Apellido</option>
@@ -59,6 +60,7 @@
                 <div class="col-6">
                     <label for="txtTipoVenta" class="form-label"> Tipo Venta:</label>
                     <InputSelect class="form-select" @bind-Value="ventas.TipoVenta">
+                        <option value="">Seleccione un tipo de venta</option>
                         @if (String.IsNullOrEmpty(ventas.TipoVenta))
                         {
                             ventas.TipoVenta = tipoVenta?.FirstOrDefault();
@@ -88,6 +90,7 @@
                             <div class="col-4">
                                 <label for="txtProducto" class="form-label"> Producto:</label>
                                 <InputSelect class="form-select" @bind-Value="ventasDetalle.ProductoId">
+                                    <option value="0">Seleccione...</option>
                                     @foreach (var producto in ProductosList)
                                     {
                                         <option value="@producto.ProductoId">@producto.Nombre (@producto.CantidadAProducir)</option>

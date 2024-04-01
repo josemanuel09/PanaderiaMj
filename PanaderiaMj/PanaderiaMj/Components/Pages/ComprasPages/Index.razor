@@ -1,4 +1,4 @@
-﻿@page "/IndexCompra"
+﻿@page "/IndexCompras"
 @rendermode InteractiveServer
 @inject ComprasService comprasService
 @inject InsumosService insumosService
@@ -59,7 +59,7 @@
                 <tr>
                     <th scope="col">Compra Id</th>
                     <th scope="col">Proveedor</th>
-                    <th scope="col">Metodo de Pago</th>
+                    <th scope="col">M&eacute;todo de Pago</th>
                     <th scope="col">Fecha</th>
                     <th scope="col">Observaciones</th>
                     <th scope="col">Ver</th>
@@ -80,17 +80,17 @@
                         <!-- Agrega más columnas según sea necesario -->
                         <td>
                             <div style="text-align:center">
-                                <a href="/ViewCompra/@compra.CompraId" class="btn btn-outline-primary bi bi-eye"></a>
+                                <a href="/ViewCompras/@compra.CompraId" class="btn btn-outline-primary bi bi-eye"></a>
                             </div>
                         </td>
                         <td>
                             <div style="text-align:center">
-                                <a href="/EditCompra/@compra.CompraId" class="btn btn-outline-warning bi bi-pencil"></a>
+                                <a href="/EditCompras/@compra.CompraId" class="btn btn-outline-warning bi bi-pencil"></a>
                             </div>
                         </td>
                         <td>
                             <div style="text-align:center">
-                                <a href="/DeleteCompra/@compra.CompraId" class="btn btn-outline-danger bi bi-trash"></a>
+                                <a href="/DeleteCompras/@compra.CompraId" class="btn btn-outline-danger bi bi-trash"></a>
                             </div>
                         </td>
 

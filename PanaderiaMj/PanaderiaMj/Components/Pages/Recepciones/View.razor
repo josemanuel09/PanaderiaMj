@@ -1,5 +1,5 @@
-﻿@page "/ViewRecepcion"
-@page "/ViewRecepcion/{RecepcionId:int}"
+﻿@page "/ViewRecepciones"
+@page "/ViewRecepciones/{RecepcionId:int}"
 @inject RecepcionesServices recepcionesServices
 @inject NavigationManager navigationManager
 @inject IJSRuntime IJSRuntime
@@ -30,7 +30,7 @@
 									<!-- Columna para los datos del proveedor -->
 									<div class="col-9">
 										<ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-											<li><strong>Recepcion Id: @recepcion.RecepcionId</strong></li>
+											<li><strong>Recepci&oacute;n Id: @recepcion.RecepcionId</strong></li>
 											<li><strong>Producto: @recepcion.ProductoId</strong></li>
 											<li><strong>Concepto: @recepcion.Concepto</strong> </li>
 											<li><strong>Cantidad: @recepcion.Cantidad</strong></li>
@@ -80,7 +80,7 @@
 	}
 	public void Volver()
 	{
-		navigationManager.NavigateTo("/IndexRecepcion");
+		navigationManager.NavigateTo("/IndexRecepciones");
 	}
 
 }
