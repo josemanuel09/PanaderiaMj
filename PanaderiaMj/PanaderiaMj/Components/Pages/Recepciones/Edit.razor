@@ -1,5 +1,5 @@
-﻿@page "/EditRecepcion"
-@page "/EditRecepcion/{RecepcionId:int}"
+﻿@page "/EditRecepciones"
+@page "/EditRecepciones/{RecepcionId:int}"
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject RecepcionesServices recepcionesService
@@ -116,6 +116,6 @@
 
     void Atras()
     {
-        Navigation.NavigateTo("/MenuRecepciones");
+        Navigation.NavigateTo("/IndexRecepciones");
     }
 }

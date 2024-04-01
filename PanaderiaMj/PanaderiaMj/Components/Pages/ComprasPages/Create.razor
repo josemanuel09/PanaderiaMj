@@ -1,5 +1,5 @@
-﻿@page "/CreateCompra"
-@page "/CreateCompra/{CompraId:int}"
+﻿@page "/CreateCompras"
+@page "/CreateCompras/{CompraId:int}"
 @inject ComprasService comprasService
 @inject NavigationManager navigationManager
 @inject InsumosService insumosService
@@ -27,14 +27,14 @@
 
         <div class="card-body">
             <!-- Id y botón buscar -->
-            <div class="row">
+            @* <div class="row">
                 <div class="col-6">
                     <label for="txtId" class="form-label">Compra Id:</label>
                     <div class="input-group">
                         <input type="number" id="txtId" class="form-control" @bind-value="compra.CompraId">
                     </div>
                 </div>
-            </div>
+            </div> *@
             <div class="row">
                 <!-- Proveedor y Método de Pago -->
                 <div class="col-6">
@@ -48,7 +48,7 @@
                     <ValidationMessage For="@(() => compra.ProveedorId)" />
                 </div>
                 <div class="col-6">
-                    <label for="txtMetodoPago" class="form-label"> Método de Pago:</label>
+                    <label for="txtMetodoPago" class="form-label"> M&eacute;todo de Pago:</label>
                     <InputSelect class="form-select" @bind-Value="compra.MetodoDePago">
                         @foreach (var metodo in MetodoPago)
                         {

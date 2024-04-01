@@ -1,5 +1,5 @@
-﻿@page "/DeleteCompra"
-@page "/DeleteCompra/{CompraId:int}"
+﻿@page "/DeleteCompras"
+@page "/DeleteCompras/{CompraId:int}"
 @inject ComprasService comprasService
 @inject NavigationManager navigationManager
 @inject InsumosService insumosService
@@ -16,7 +16,7 @@
             <h3><strong>Eliminar Compra</strong></h3>
         </div>
         <div class="card-header">
-            <h3 class="text-danger">¿Estás seguro de que quieres eliminar la compra?</h3>
+            <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar la compra?</h3>
         </div>
         <!-- Cuerpo -->
         <div class="card-body">
@@ -32,7 +32,7 @@
                                         <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
                                             <li><strong>CompraId:</strong> @compra.CompraId</li>
                                             <li><strong>Proveedor:</strong> @proveedorNombre</li>
-                                            <li><strong>Método de Pago:</strong> @compra.MetodoDePago</li>
+                                            <li><strong>M&eacute;todo de Pago:</strong> @compra.MetodoDePago</li>
                                             <li><strong>Fecha Pedida:</strong> @compra.FechaPedida</li>
                                             <li><strong>Observaciones:</strong> @compra.Observaciones</li>
                                             <li><strong>Monto Total:</strong> @compra.MontoTotal</li>
@@ -114,6 +114,6 @@
 
     public void Volver()
     {
-        navigationManager.NavigateTo("/IndexCompra");
+        navigationManager.NavigateTo("/IndexCompras");
     }
 }

@@ -1,5 +1,5 @@
-﻿@page "/EditCompra"
-@page "/EditCompra/{CompraId:int}"
+﻿@page "/EditCompras"
+@page "/EditCompras/{CompraId:int}"
 @inject ComprasService comprasService
 @inject NavigationManager navigationManager
 @inject InsumosService insumosService
@@ -26,14 +26,14 @@
 
         <div class="card-body">
             <!-- Id y botón buscar -->
-            <div class="row">
+            @* <div class="row">
                 <div class="col-6">
                     <label for="txtId" class="form-label">Compra Id:</label>
                     <div class="input-group">
                         <input type="number" id="txtId" class="form-control" @bind-value="compra.CompraId">
                     </div>
                 </div>
-            </div>
+            </div> *@
             <div class="row">
                 <!-- Proveedor y Método de Pago -->
                 <div class="col-6">
@@ -272,6 +272,6 @@
 
     public void Atras()
     {
-        navigationManager.NavigateTo("/MenuCompras");
+        navigationManager.NavigateTo("/IndexCompras");
     }
 }

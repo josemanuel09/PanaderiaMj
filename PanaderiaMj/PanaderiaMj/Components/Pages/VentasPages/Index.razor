@@ -60,9 +60,9 @@
                     <th scope="col">Concepto</th>
                     <th scope="col">Tipo de Venta</th>
                     <th scope="col">Fecha de Venta </th>
-
-                    <!-- Agrega más columnas según sea necesario -->
                     <th scope="col">Ver</th>
+                    <th scope="col">Editar</th>
+                    <th scope="col">Eliminar</th>
                 </tr>
             </thead>
             <tbody>
@@ -75,10 +75,19 @@
                         <td>@ventas.TipoVenta</td>
                         <td>@ventas.FechaVenta</td>
 
-                        <!-- Agrega más columnas según sea necesario -->
                         <td>
                             <div style="text-align:center">
-                                <a href="/ViewCompras/@ventas.VentaId" class="btn btn-outline-primary bi bi-eye"></a>
+                                <a href="/ViewVentas/@ventas.VentaId" class="btn btn-outline-primary bi bi-eye"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="text-align:center">
+                                <a href="/EditVentas/@ventas.VentaId" class="btn btn-outline-warning bi bi-pencil"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="text-align:center">
+                                <a href="/DeleteVentas/@ventas.VentaId" class="btn btn-outline-danger bi bi-trash"></a>
                             </div>
                         </td>
                     </tr>

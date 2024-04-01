@@ -1,5 +1,5 @@
-﻿@page "/DeleteRecepcion"
-@page "/DeleteRecepcion/{RecepcionId:int}"
+﻿@page "/DeleteRecepciones"
+@page "/DeleteRecepciones/{RecepcionId:int}"
 @inject RecepcionesServices recepcionesService
 @inject NavigationManager navigationManager
 @inject NotificationService NotificationService
@@ -15,14 +15,14 @@
             <h3><strong>Eliminar de Recepcion</strong></h3>
         </div>
         <div class="card-header">
-            <h3 class="text-danger">¿Estás seguro de que quieres eliminar la recepcion?</h3>
+            <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar la recepci&oacute;n?</h3>
         </div>
         <!-- Cuerpo -->
         <div class="card-body">
             <div class="row">
                 <div class="col-8">
                     <div class="col-md-11">
-                        <h3 class="text-center"><strong>Datos de la recepcion</strong></h3>
+                        <h3 class="text-center"><strong>Datos de la recepci&oacute;n</strong></h3>
                         <div class="border-primmary border border-2 borde">
                             <div class="card-body">
                                 <div class="row">
@@ -35,7 +35,7 @@
                                     <!-- Columna para los datos del cliente -->
                                     <div class="col-9">
                                         <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                            <li><strong>RecepcionId: @recepcion.RecepcionId</strong></li>
+                                            <li><strong>Recepci&oacute;n Id: @recepcion.RecepcionId</strong></li>
                                             <li><strong>Producto: @recepcion.ProductoId</strong></li>
                                             <li><strong>Concepto: @recepcion.Concepto</strong></li>
                                             <li><strong>Cantidad: @recepcion.Cantidad</strong> </li>
@@ -122,7 +122,7 @@
 
     public void Volver()
     {
-        navigationManager.NavigateTo("/IndexRecepcion");
+        navigationManager.NavigateTo("/IndexRecepciones");
     }
 
 }

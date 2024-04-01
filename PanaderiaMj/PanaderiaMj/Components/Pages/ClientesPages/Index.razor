@@ -1,4 +1,4 @@
-﻿@page "/IndexCliente"
+﻿@page "/IndexClientes"
 @rendermode InteractiveServer
 @inject ClientesServices clienteservice
 
@@ -28,7 +28,7 @@
             @if (Opcion == 1)
             {
                 <div class="col-3">
-                    <label>ID</label>
+                    <label>Cliente Id</label>
                     <div class="input-group">
                         <input type="number" @bind="ClientesId" class="form-control" />
                     </div>
@@ -65,11 +65,11 @@
                     <th scope="col" style="width: 90px;">Cliente Id</th>
                     <th scope="col" style="width: 160px;">Nombre</th>
                     <th scope="col" style="width: 160px;">Apellido</th>
-                    <th scope="col" style="width: 160px;">Telefono</th>
-                    <th scope="col" style="width: 150px;">Correo Electronico</th>
-                    <th scope="col" style="width: 150px;">Cedula</th>
+                    <th scope="col" style="width: 160px;">Tel&eacute;fono</th>
+                    <th scope="col" style="width: 150px;">Correo Electr&oacute;nico</th>
+                    <th scope="col" style="width: 150px;">C&eacute;dula</th>
                     <th scope="col" style="width: 160px;">Fecha</th>
-                    <th scope="col" style="width: 160px;">Direccion</th>
+                    <th scope="col" style="width: 160px;">Direcci&oacute;n</th>
                     <th scope="col" style="width: 100px;">Ver</th>
                     <th scope="col" style="width: 100px;">Editar</th>
                     <th scope="col" style="width: 100px;">Eliminar</th>
@@ -89,17 +89,17 @@
                         <td>@cliente.FechaCreacion.ToShortDateString()</td>
                         <td>
                             <div style="text-align:center">
-                                <a href="/ViewCliente/@cliente.ClienteId" class="btn btn-outline-primary bi bi-eye"></a>
+                                <a href="/ViewClientes/@cliente.ClienteId" class="btn btn-outline-primary bi bi-eye"></a>
                             </div>
                         </td>
                         <td>
                             <div style="text-align: center;">
-                                <a href="/EditCliente/@cliente.ClienteId" class="btn btn-outline-warning bi bi-pencil"></a>
+                                <a href="/EditClientes/@cliente.ClienteId" class="btn btn-outline-warning bi bi-pencil"></a>
                             </div>
                         </td>
                         <td>
                             <div style="text-align: center;">
-                                <a href="/DeleteCliente/@cliente.ClienteId" class="btn btn-outline-danger bi bi-trash-fill"></a>
+                                <a href="/DeleteClientes/@cliente.ClienteId" class="btn btn-outline-danger bi bi-trash-fill"></a>
                             </div>
                         </td>
                     </tr>

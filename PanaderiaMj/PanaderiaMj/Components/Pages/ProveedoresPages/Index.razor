@@ -1,4 +1,4 @@
-﻿@page "/IndexProveedor"
+﻿@page "/IndexProveedores"
 @inject ProveedoresService proveedoresService
 @rendermode InteractiveServer
 
@@ -62,8 +62,8 @@
                 <tr>
                     <th scope="col" style="width: 90px;">Proveedor ID</th>
                     <th scope="col" style="width: 160px;">Nombre</th>
-                    <th scope="col" style="width: 160px;">Correo Electrónico</th>
-                    <th scope="col" style="width: 160px;">Teléfono</th>
+                    <th scope="col" style="width: 160px;">Correo Electr&oacute;nico</th>
+                    <th scope="col" style="width: 160px;">Tel&eacute;fono</th>
                     <th scope="col" style="width: 160px;">RNC</th>
                     <th scope="col" style="width: 160px;">Tipo de Contribuyente</th>
                     <th scope="col" style="width: 100px;">Ver</th>
@@ -83,17 +83,17 @@
                         <td>@proveedor.TipoContribuyente</td>
                         <td>
                             <div style="text-align:center">
-                                <a href="/ViewProveedor/@proveedor.ProveedorId" class="btn btn-outline-primary bi bi-eye"></a>
+                                <a href="/ViewProveedores/@proveedor.ProveedorId" class="btn btn-outline-primary bi bi-eye"></a>
                             </div>
                         </td>
                         <td>
                             <div style="text-align: center;">
-                                <a href="/EditarProveedor/@proveedor.ProveedorId" class="btn btn-outline-warning bi bi-pencil"></a>
+                                <a href="/EditProveedores/@proveedor.ProveedorId" class="btn btn-outline-warning bi bi-pencil"></a>
                             </div>
                         </td>
                         <td>
                             <div style="text-align: center;">
-                                <a href="/DeleteProveedor/@proveedor.ProveedorId" class="btn btn-outline-danger bi bi-trash-fill"></a>
+                                <a href="/DeleteProveedores/@proveedor.ProveedorId" class="btn btn-outline-danger bi bi-trash-fill"></a>
                             </div>
                         </td>
                     </tr>

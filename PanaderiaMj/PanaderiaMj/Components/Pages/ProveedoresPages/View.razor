@@ -1,5 +1,5 @@
-﻿@page "/ViewProveedor"
-@page "/ViewProveedor/{ProveedorId:int}"
+﻿@page "/ViewProveedores"
+@page "/ViewProveedores/{ProveedorId:int}"
 @inject ProveedoresService proveedoresService
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
@@ -31,12 +31,12 @@
                                         <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
                                             <li><strong>ProveedorId: @proveedor.ProveedorId</strong></li>
                                             <li><strong>Nombre: @proveedor.Nombre</strong></li>
-                                            <li><strong>Correo Electrónico: @proveedor.Email</strong></li>
-                                            <li><strong>Teléfono: @proveedor.Telefono</strong></li>
+                                            <li><strong>Correo Electr&oacute;nico: @proveedor.Email</strong></li>
+                                            <li><strong>Tel&eacute;fono: @proveedor.Telefono</strong></li>
                                             <li><strong>RNC: @proveedor.RNC</strong></li>
                                             <li><strong>Tipo de Contribuyente: @proveedor.TipoContribuyente</strong></li>
-                                            <li><strong>Fecha de Creación: @proveedor.Fecha</strong></li>
-                                            <li><strong>Dirección: @proveedor.Direccion</strong></li>
+                                            <li><strong>Fecha de Creaci&oacute;n: @proveedor.Fecha</strong></li>
+                                            <li><strong>Direcci&oacute;n: @proveedor.Direccion</strong></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -82,6 +82,6 @@
 
     public void Atras()
     {
-        navigationManager.NavigateTo("/IndexProveedor");
+        navigationManager.NavigateTo("/IndexProveedores");
     }
 }

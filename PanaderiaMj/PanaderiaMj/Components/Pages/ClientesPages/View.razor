@@ -1,5 +1,5 @@
-﻿@page "/ViewCliente"
-@page "/ViewCliente/{ClienteId:int}"
+﻿@page "/ViewClientes"
+@page "/ViewClientes/{ClienteId:int}"
 @inject ClientesServices clienteservice
 @inject NavigationManager navigationManager
 @inject IJSRuntime IJSRuntime
@@ -82,7 +82,7 @@
 	}
 	public void Volver()
 	{
-		navigationManager.NavigateTo("/IndexCliente");
+		navigationManager.NavigateTo("/IndexClientes");
 	}
 
 }

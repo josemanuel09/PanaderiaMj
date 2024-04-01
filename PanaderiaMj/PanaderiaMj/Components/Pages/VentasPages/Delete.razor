@@ -1,5 +1,5 @@
-﻿@page "/DeleteVenta"
-@page "/DeleteVenta/{VentaId:int}"
+﻿@page "/DeleteVentas"
+@page "/DeleteVentas/{VentaId:int}"
 @inject VentasService ventasService
 @inject ClientesServices clientesService
 @inject ProductosServices productosServices
@@ -30,7 +30,7 @@
                                     <!-- Columna para los datos del producto -->
                                     <div class="col-12">
                                         <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                            <li><strong>VentaId:</strong> @ventas.VentaId</li>
+                                            <li><strong>Venta Id:</strong> @ventas.VentaId</li>
                                             <li><strong>Cliente:</strong> @ventas.ClienteId</li>
                                             <li><strong>Concepto:</strong> @ventas.Concepto</li>
                                             <li><strong>Tipo Venta:</strong> @ventas.TipoVenta</li>

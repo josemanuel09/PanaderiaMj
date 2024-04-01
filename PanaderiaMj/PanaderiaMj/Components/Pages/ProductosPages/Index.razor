@@ -1,4 +1,4 @@
-﻿@page "/IndexProducto"
+﻿@page "/IndexProductos"
 @rendermode InteractiveServer
 @inject ProductosServices productosService
 @inject InsumosService insumosService
@@ -23,7 +23,6 @@
                 <select @bind="Opcion" class="form-select">
                     <option value="0">Todo</option>
                     <option value="1">ProductoId</option>
-                    <!-- Agrega más opciones de filtro según sea necesario -->
                 </select>
             </div>
             @if (Opcion == 1)
@@ -35,7 +34,6 @@
                     </div>
                 </div>
             }
-            <!-- Agrega más bloques de código para otros tipos de filtro -->
             <div class="col-3">
                 <label>Desde:</label>
                 <input type="date" @bind="Desde" class="form-control" />
@@ -55,13 +53,13 @@
                 <tr>
                     <th scope="col">Producto Id</th>
                     <th scope="col">Nombre</th>
-                    <th scope="col">Descripcion</th>
-                    <th scope="col">Fecha Creacion</th>
+                    <th scope="col">Descripci&oacute;n</th>
+                    <th scope="col">Fecha Creaci&oacute;n</th>
                     <th scope="col">Precio Producto</th>
                     <th scope="col">Cantidad</th>
-
-                    <!-- Agrega más columnas según sea necesario -->
                     <th scope="col">Ver</th>
+                    <th scope="col">Editar</th>
+                    <th scope="col">Eliminar</th>
                 </tr>
             </thead>
             <tbody>
@@ -74,10 +72,19 @@
                         <td>@producto.FechaCreacion.ToShortDateString()</td>
                         <td>@producto.PrecioProducto</td>
                         <td>@producto.CantidadAProducir</td>
-                        <!-- Agrega más columnas según sea necesario -->
                         <td>
                             <div style="text-align:center">
                                 <a href="/ViewCompras/@producto.ProductoId" class="btn btn-outline-primary bi bi-eye"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="text-align:center">
+                                <a href="/EditCompras/@producto.ProductoId" class="btn btn-outline-warning bi bi-pencil"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="text-align:center">
+                                <a href="/DeleteCompras/@producto.ProductoId" class="btn btn-outline-danger bi bi-trash"></a>
                             </div>
                         </td>
                     </tr>

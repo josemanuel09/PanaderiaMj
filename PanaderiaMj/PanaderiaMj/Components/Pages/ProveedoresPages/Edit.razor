@@ -1,5 +1,5 @@
-﻿@page "/EditProveedor"
-@page "/EditProveedor/{ProveedorId:Int}"
+﻿@page "/EditProveedores"
+@page "/EditProveedores/{ProveedorId:Int}"
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 @inject ProveedoresService proveedoresService
@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="Email">Correo Electrónico:</label>
+                        <label for="Email">Correo Electr&oacute;nico:</label>
                         <InputText @bind-Value="proveedor.Email" class="form-control" />
                         <ValidationMessage For="@(() => proveedor.Email)" />
                     </div>
@@ -50,7 +50,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="Direccion">Dirección:</label>
+                        <label for="Direccion">Direcci&oacute;n:</label>
                         <InputText @bind-Value="proveedor.Direccion" class="form-control" />
                         <ValidationMessage For="@(() => proveedor.Direccion)" />
                     </div>
@@ -59,7 +59,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="Telefono">Teléfono:</label>
+                        <label for="Telefono">Tel&eacute;fono:</label>
                         <InputText @bind-Value="proveedor.Telefono" class="form-control" />
                         <ValidationMessage For="@(() => proveedor.Telefono)" />
                     </div>
@@ -177,7 +177,7 @@
 
     public void Atras()
     {
-        NavigationManager.NavigateTo("/MenuProveedores");
+        NavigationManager.NavigateTo("/IndexProveedores");
     }
 }
 
