@@ -25,8 +25,14 @@ Panaderia_123
 El sistema de ventas de la panadería consta de varios módulos que permiten llevar un control eficiente de las operaciones diarias. 
 
 Registrar Compra: Este permite Registrar la entrada de insumos y poder llevar el inventario de los insumos utilizado para el producto terminado.
+
+
 Registrar Cliente: Este Permite que cada cliente tenga su usuario.
+
+
 Registrar Ventas: Este Permite Poder registar una venta y a la vez actualizar los inventarios dependiendo la cantidad de productos vendidos disminuiran los inventarios.
+
+
 Registar Producto: Este Permite poder crear un nuevo producto utilizando los insumos ya agregados en el inventario de compras. Lo que causara una disminucion en el inventario de compras. 
 
 En resumen, el sistema de ventas de la panadería es una herramienta completa que permite llevar un control detallado de las operaciones diarias. Con sus distintos módulos, es posible gestionar el inventario, controlar las compras y ventas, así como también conocer la información relevante de los clientes.
