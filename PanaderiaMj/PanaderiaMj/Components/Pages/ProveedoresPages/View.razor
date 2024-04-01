@@ -1,0 +1,87 @@
+﻿@page "/ViewProveedor"
+@page "/ViewProveedor/{ProveedorId:int}"
+@inject ProveedoresService proveedoresService
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+
+<PageTitle>Detalles de Proveedor</PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        <!-- Header -->
+        <div class="card-header">
+            <h3><strong>Detalles de Proveedor</strong></h3>
+        </div>
+        <!-- Cuerpo -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <div class="col-md-11">
+                        <h3 class="text-center"><strong>Datos del Proveedor</strong></h3>
+                        <div class="border-primary border border-2 border">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Columna para la imagen -->
+                                    <div class="col-2">
+                                        <div class="text-center">
+                                            <img src="Images/ventas.png" alt="Imagen" class="img-fluid img-thumbnail" style="width: 100px; height: auto;">
+                                        </div>
+                                    </div>
+                                    <!-- Columna para los datos del proveedor -->
+                                    <div class="col-9">
+                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                            <li><strong>ProveedorId: @proveedor.ProveedorId</strong></li>
+                                            <li><strong>Nombre: @proveedor.Nombre</strong></li>
+                                            <li><strong>Correo Electrónico: @proveedor.Email</strong></li>
+                                            <li><strong>Teléfono: @proveedor.Telefono</strong></li>
+                                            <li><strong>RNC: @proveedor.RNC</strong></li>
+                                            <li><strong>Tipo de Contribuyente: @proveedor.TipoContribuyente</strong></li>
+                                            <li><strong>Fecha de Creación: @proveedor.Fecha</strong></li>
+                                            <li><strong>Dirección: @proveedor.Direccion</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Columna para el detalle del proveedor -->
+            </div>
+        </div>
+        <!-- Footer -->
+
+        <div class="card-footer">
+            <a href="/IndexProveedor" class="btn btn-outline-primary"><i class="bi bi-box-arrow-left"></i> Volver</a>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int ProveedorId { get; set; }
+    public Proveedores proveedor { get; set; } = new Proveedores();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ProveedorId > 0)
+        {
+            proveedor.ProveedorId = ProveedorId;
+            await Buscar();
+        }
+    }
+
+    public async Task Buscar()
+    {
+        var proveedorEncontrado = await proveedoresService.Buscar(proveedor.ProveedorId);
+
+        if (proveedorEncontrado != null)
+        {
+            proveedor = proveedorEncontrado;
+        }
+    }
+
+    public void Atras()
+    {
+        navigationManager.NavigateTo("/IndexProveedor");
+    }
+}

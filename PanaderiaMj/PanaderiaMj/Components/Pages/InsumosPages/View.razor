@@ -1,0 +1,75 @@
+﻿@page "/ViewInsumo"
+@page "/ViewInsumo/{InsumoId:int}"
+@inject InsumosService insumosService
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Detalles de Insumo</PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        <!-- Header -->
+        <div class="card-header">
+            <h3><strong>Detalles de Insumo</strong></h3>
+        </div>
+        <!-- Cuerpo -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <div class="col-md-11">
+                        <h3 class="text-center"><strong>Datos del Insumo</strong></h3>
+                        <div class="border-primmary border border-2 borde">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Columna para los datos del insumo -->
+                                    <div class="col-12">
+                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                            <li><strong>InsumoId: @insumo.InsumoId</strong></li>
+                                            <li><strong>Nombre: @insumo.Nombre</strong></li>
+                                            <li><strong>Cantidad: @insumo.CantidadDisponible</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Columna para el detalle del insumo -->
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="card-footer">
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int InsumoId { get; set; }
+    public Insumos insumo { get; set; } = new Insumos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (InsumoId > 0)
+        {
+            insumo.InsumoId = InsumoId;
+            await Buscar();
+        }
+    }
+
+    public async Task Buscar()
+    {
+        var insumoEncontrado = await insumosService.Buscar(insumo.InsumoId);
+
+        if (insumoEncontrado != null)
+        {
+            insumo = insumoEncontrado;
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/IndexInsumos");
+    }
+}

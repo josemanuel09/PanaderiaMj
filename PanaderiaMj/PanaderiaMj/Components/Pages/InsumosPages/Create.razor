@@ -1,0 +1,80 @@
+﻿@page "/CreateInsumo"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@inject InsumosService insumoservice
+
+<EditForm Model="insumo" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card" style="max-width: 1000px; margin: 0 auto;">
+        <div class="card-header" style="background-color: #5D5C61; color: white; text-align: center;">
+            <img src="/Images/clientes.png" alt="Titulo" style="max-width: 50%; height: auto; margin-bottom: 10px;">
+            <h1>Crear Insumo</h1>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Nombre:</label>
+                        <InputText @bind-Value="insumo.Nombre" class="form-control" />
+                        <ValidationMessage For="@(() => insumo.Nombre)" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Cantidad Disponible:</label>
+                        <InputNumber @bind-Value="insumo.CantidadDisponible" class="form-control" />
+                        <ValidationMessage For="@(() => insumo.CantidadDisponible)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center" style="background-color: #5D5C61;">
+            <button type="button" class="btn btn-success bi bi-floppy-fill" @onclick="Guardar">Guardar</button>
+            <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Atras" type="button">
+                <span class="bi bi-arrow-return-left"></span>Volver Atrás
+            </button>
+        </div>
+    </div>
+
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public int InsumoId { get; set; }
+    public Insumos insumo { get; set; } = new Insumos();
+    public string Mensaje = " ";
+    private bool nombreexistente = false;
+    private bool cedulaexistente = false;
+    private bool Guardo = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (InsumoId > 0)
+        {
+            this.insumo.InsumoId = InsumoId;
+            await this.Buscar();
+        }
+
+    }
+    public async Task Buscar()
+    {
+        var clienteEncontrado = await insumoservice.Buscar(insumo.InsumoId);
+
+        if (clienteEncontrado != null)
+        {
+            this.insumo = clienteEncontrado;
+        }
+    }
+    public async Task Guardar()
+    {
+        await insumoservice.Guardar(insumo);
+        Guardo = true;
+    }
+
+    void Atras()
+    {
+        Navigation.NavigateTo("/MenuClientes");
+    }
+}

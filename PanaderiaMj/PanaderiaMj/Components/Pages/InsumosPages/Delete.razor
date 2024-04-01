@@ -1,0 +1,90 @@
+﻿@page "/DeleteInsumo"
+@page "/DeleteInsumo/{InsumoId:int}"
+@inject InsumosService insumosService
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Eliminar Insumo</PageTitle>
+<div class="container">
+    <div class="card shadow-header">
+        <!-- Header -->
+        <div class="card-header">
+            <h3><strong>Eliminar Insumo</strong></h3>
+        </div>
+        <div class="card-header">
+            <h3 class="text-danger">¿Estás seguro de que quieres eliminar el insumo?</h3>
+        </div>
+        <!-- Cuerpo -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <div class="col-md-11">
+                        <h3 class="text-center"><strong>Datos del Insumo</strong></h3>
+                        <div class="border-primmary border border-2 borde">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Columna para los datos del insumo -->
+                                    <div class="col-12">
+                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                            <li><strong>InsumoId: @insumo.InsumoId</strong></li>
+                                            <li><strong>Nombre: @insumo.Nombre</strong></li>
+                                            <li><strong>Cantidad Disponible: @insumo.CantidadDisponible</strong></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="card-footer">
+            <button type="button" class="btn btn-outline-danger" @onclick="EliminarInsumo"><i class="bi bi-trash-fill"></i> Eliminar</button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int InsumoId { get; set; }
+    public Insumos insumo { get; set; } = new Insumos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (InsumoId > 0)
+        {
+            insumo.InsumoId = InsumoId;
+            await this.Buscar();
+        }
+    }
+
+    public async Task Buscar()
+    {
+        var insumoEncontrado = await insumosService.Buscar(insumo.InsumoId);
+
+        if (insumoEncontrado != null)
+        {
+            insumo = insumoEncontrado;
+        }
+    }
+
+    public async Task EliminarInsumo()
+    {
+        if (!await insumosService.Existe(insumo.InsumoId))
+        {
+            return;
+        }
+        if (await insumosService.Eliminar(this.insumo))
+        {
+            Volver();
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/IndexInsumos");
+    }
+}

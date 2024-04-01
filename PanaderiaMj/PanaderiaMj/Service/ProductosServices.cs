@@ -8,7 +8,7 @@ namespace PanaderiaMj.Service
     public class ProductosServices
     {
         private readonly Contexto _contexto;
-        public ProductosService(Contexto contexto)
+        public ProductosServices(Contexto contexto)
         {
             _contexto = contexto;
         }
