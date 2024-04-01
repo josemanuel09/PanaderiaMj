@@ -1,0 +1,192 @@
+﻿@page "/CreateProducto"
+@inject ProductosServices productoservice
+@inject NavigationManager navigationManager
+@inject InsumosService insumosService
+@inject IJSRuntime IJSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Crear Producto</PageTitle>
+<EditForm Model="producto" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card" style="max-width: 1000px; left: 50%; transform: translate(-50%);">
+        <div class="card-header" style="background-color: #5D5C61">
+            <div class="row" style="flex-direction: row; align-items: center;">
+                <div class="col-3">
+                    <div style="width: 100%; display: flex; justify-content: center;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png" alt="pan" style="max-width: 100%; height: auto;">
+                    </div>
+                </div>
+                <div class="col-9">
+                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Crear Producto</strong></h1>
+                </div>
+            </div>
+        </div>
+
+        <!--Id-->
+        <div class="card-body">
+            @* <div class="row">
+            <label class="form-label">Producto Id</label>
+            <div class="input-group">
+            <InputNumber class="form-control" @bind-Value="producto.ProductoId" />
+            </div>
+            </div> *@
+
+            <div class="row">
+                <div class="col-6">
+                    <label class="form-label">Nombre Producto</label>
+                    <InputText class="form-control" @bind-Value="producto.Nombre" />
+                    <ValidationMessage For="@(() => producto.Nombre)" />
+                </div>
+                <div class="col-6">
+                    <label class="form-label">Descripcion</label>
+                    <InputText class="form-control" @bind-Value="producto.Descripcion" />
+                    <ValidationMessage For="@(() => producto.Descripcion)" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label class="form-label">Fecha Creacion</label>
+                    <InputDate class="form-control" @bind-Value="producto.FechaCreacion" />
+                    <ValidationMessage For="@(() => producto.FechaCreacion)" />
+                </div>
+                <div class="col-6">
+                    <label class="form-label">Precio Producto</label>
+                    <InputNumber class="form-control" @bind-Value="producto.PrecioProducto" />\
+                    <ValidationMessage For="@(() => producto.PrecioProducto)" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label class="form-label">Cantidad a Producir</label>
+                    <InputNumber class="form-control" @bind-Value="producto.CantidadAProducir" />
+                    <ValidationMessage For="@(() => producto.CantidadAProducir)" />
+                </div>
+                <div class="col-6">
+                    <label class="form-label">Nota</label>
+                    <InputText class="form-control" @bind-Value="producto.Nota" />
+                </div>
+            </div>
+            <!--Agregar Detalle-->
+            <div class="row">
+                <div class="col-12 mt-3">
+                    <div class="card card-header">
+                        <h5>Insumos Utilizados</h5>
+                        <div class="row">
+                            <div class="col-3">
+                                <label class="form-label">Insumo</label>
+                                <InputSelect class="form-select" @bind-Value="productosDetalle.InsumoId">
+                                    @foreach (var insumo in InsumosList)
+                                    {
+                                        <option value="@insumo.InsumoId">@insumo.Nombre</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => productosDetalle.InsumoId)" />
+                            </div>
+                            <div class="col-3">
+                                <label class="form-label">Cantidad</label>
+                                <InputNumber class="form-control" @bind-Value="productosDetalle.Cantidad" />
+                                <ValidationMessage For="@(() => productosDetalle.Cantidad)" />
+
+                            </div>
+                            <div class="col-2">
+                                <br />
+                                <button name="btnAgregar" id="btnAgregar" class="btn btn-primary" @onclick="AgregarDetalle" type="button">
+                                    <span class="bi bi-plus-circle"></span>Agregar
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive mt-3">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Insumo</th>
+                            <th>Cantidad</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detalle in producto.ProductosDetalle)
+                        {
+                            var insumo = InsumosList.FirstOrDefault(i => i.InsumoId == detalle.InsumoId);
+                            <tr>
+                                <td>@(insumo != null ? insumo.Nombre : "No encontrado")</td>
+                                <td>@detalle.Cantidad</td>
+                                <td>
+                                    <button name="BtnEliminar" id="BtnEliminar" class="btn btn-danger mr-2" @onclick="@(() => EliminarDetalle(detalle))">
+                                        <span class="bi bi-trash"></span> Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                    
+                </table>
+            </div>
+
+
+
+
+
+        </div>
+        <div class="card-footer text-center fs-5" style="background-color: #5D5C61">
+            <!-- Botones -->
+            <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Nuevo" type="button">
+                <span class="bi bi-plus-circle"></span> Nuevo
+            </button>
+            <button name="btnGuardar" id="btnGuardar" class="btn btn-success mr-2" @onclick="Guardar" type="button">
+                <span class="bi bi-download"></span> Guardar
+            </button>
+            <button name="btnVolver" id="btnVolver" class="btn btn-secondary" @onclick="Atras" type="button">
+                <span class="bi bi-arrow-left-square-fill"></span> Volver Atrás
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int ProductoId { get; set; }
+    public Productos producto { get; set; } = new Productos();
+    public ProductosDetalle productosDetalle { get; set; } = new ProductosDetalle();
+    public List<Insumos> InsumosList { get; set; } = new List<Insumos>();
+    public bool Condicion { get; set; } = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        InsumosList = await insumosService.Listar(t => true);
+        producto.FechaCreacion = DateTime.Now;
+
+    }
+    public async Task Guardar()
+    {
+        var Guardo = await productoservice.Guardar(producto);
+    }
+    public void AgregarDetalle()
+    {
+        if (productosDetalle.InsumoId > 0 && productosDetalle.Cantidad > 0)
+        {
+            producto.ProductosDetalle.Add(productosDetalle);
+            productosDetalle = new ProductosDetalle();
+        }
+    }
+    public void EliminarDetalle(ProductosDetalle detalle)
+    {
+        producto.ProductosDetalle.Remove(detalle);
+    }
+    public void Nuevo()
+    {
+        producto = new Productos();
+        productosDetalle = new ProductosDetalle();
+    }
+    public void Atras()
+    {
+        navigationManager.NavigateTo("/IndexProducto");
+    }
+
+}
