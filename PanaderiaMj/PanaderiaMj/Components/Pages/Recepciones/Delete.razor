@@ -1,12 +1,12 @@
 ﻿@page "/DeleteRecepcion"
-@page "/DeleteRecepcion/{Recepcion:int}"
+@page "/DeleteRecepcion/{RecepcionId:int}"
 @inject RecepcionesServices recepcionesService
 @inject NavigationManager navigationManager
+@inject NotificationService NotificationService
 @inject IJSRuntime IJSRuntime
 @rendermode InteractiveServer
 
-
-
+<RadzenNotification />
 <PageTitle>Detalles de Recepciones</PageTitle>
 <div class="container">
     <div class="card shadow-header">
@@ -40,7 +40,6 @@
                                             <li><strong>Concepto: @recepcion.Concepto</strong></li>
                                             <li><strong>Cantidad: @recepcion.Cantidad</strong> </li>
                                             <li><strong>Fecha: @recepcion.Fecha</strong></li>
-                                            
                                         </ul>
                                     </div>
                                 </div>
@@ -85,11 +84,39 @@
     {
         if (!await recepcionesService.Existe(RecepcionId))
         {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "La recepción no existe.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
             return;
         }
+
         if (await recepcionesService.Eliminar(recepcion))
         {
+            var mensajeExito = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Éxito",
+                    Detail = "La recepción se eliminó correctamente.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeExito);
             Volver();
+        }
+        else
+        {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Ocurrió un error al eliminar la recepción.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
         }
     }
 
