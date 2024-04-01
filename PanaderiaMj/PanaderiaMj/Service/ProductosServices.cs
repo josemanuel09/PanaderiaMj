@@ -53,7 +53,7 @@ namespace PanaderiaMj.Service
 
         public async Task<Productos?> Buscar(int ProductoId)
         {
-            return await _contexto.Productos
+            return await _contexto.Productos.Include(p => p.ProductosDetalle)
                 .Where(c => c.ProductoId == ProductoId)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
