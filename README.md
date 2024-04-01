@@ -37,6 +37,8 @@ https://github.com/josemanuel09/PanaderiaMj.git
 https://youtu.be/SZ91Dut2d2c
 
 #Publicar el portal en somee o azure.
+ftp://panaderiamj.backup.somee.com/PanaderiaMj_MSSql_Database_Backup
+rapido
 
 # Imagenes:
 
