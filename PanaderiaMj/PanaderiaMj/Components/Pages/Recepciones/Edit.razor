@@ -1,14 +1,19 @@
 ﻿@page "/EditRecepcion"
+@page "/EditRecepcion/{RecepcionId:int}"
 @rendermode InteractiveServer
 @inject NavigationManager Navigation
 @inject RecepcionesServices recepcionesService
+@inject ProductosServices productosServices
+@inject NotificationService NotificationService
+@inject IJSRuntime JSRuntime
 
+<RadzenNotification />
 <EditForm Model="recepcion" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     <div class="card" style="max-width: 1000px; margin: 0 auto;">
         <div class="card-header" style="background-color: #5D5C61; color: white; text-align: center;">
-            <img src="/Images/clientes.png" alt="Titulo" style="max-width: 50%; height: auto; margin-bottom: 10px;">
-            <h1>Crear Cliente</h1>
+            <img src="/Images/recepciones.png" alt="Titulo" style="max-width: 50%; height: auto; margin-bottom: 10px;">
+            <h1>Editar Recepcion</h1>
         </div>
 
         <div class="card-body">
@@ -17,14 +22,13 @@
                     <div class="form-group">
                         <label>Producto:</label>
                         <InputSelect @bind-Value="recepcion.ProductoId" class="form-control">
-                            <option value="0">Seleccione un producto</option>
-                            @foreach (var producto in productos)
+                            <option value="">Seleccione un Producto</option>
+                            @foreach (var producto in productosList)
                             {
-                                <option value="@producto.ProductoId">@producto.Nombre</option>
+                                <option value=@producto.ProductoId>@producto.Nombre</option>
                             }
                         </InputSelect>
                         <ValidationMessage For="@(() => recepcion.ProductoId)" />
-
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -64,14 +68,13 @@
     [Parameter]
     public int RecepcionId { get; set; }
     public Recepciones recepcion { get; set; } = new Recepciones();
-    public List<Productos> productos { get; set; } = new List<Productos>();
-    public string Mensaje = " ";
-    private bool nombreexistente = false;
-    private bool cedulaexistente = false;
+    public List<Productos> productosList { get; set; } = new List<Productos>();
     private bool Guardo = false;
 
     protected override async Task OnInitializedAsync()
     {
+        productosList = await productosServices.Listar(t => true);
+
         if (RecepcionId > 0)
         {
             this.recepcion.RecepcionId = RecepcionId;
@@ -80,6 +83,7 @@
 
         recepcion.Fecha = DateTime.Now;
     }
+
     public async Task Buscar()
     {
         var recepcionEncontrada = await recepcionesService.Buscar(recepcion.RecepcionId);
@@ -89,14 +93,29 @@
             this.recepcion = recepcionEncontrada;
         }
     }
+
     public async Task Guardar()
     {
+        if (string.IsNullOrEmpty(recepcion.Concepto))
+        {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "Debe ingresar un concepto válido.",
+                    Duration = 5000
+                };
+
+            NotificationService.Notify(mensajeError);
+            return;
+        }
+
         await recepcionesService.Guardar(recepcion);
         Guardo = true;
     }
 
     void Atras()
     {
-        Navigation.NavigateTo("/IndexRecepcion");
+        Navigation.NavigateTo("/MenuRecepciones");
     }
 }
