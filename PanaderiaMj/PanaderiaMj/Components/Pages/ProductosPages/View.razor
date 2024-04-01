@@ -1,0 +1,95 @@
+﻿@page "/ViewProductos"
+@page "/ViewProductos/{ProductoId:int}"
+@inject ProductosServices productosService
+@inject InsumosService insumosService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Detalles de Producto</PageTitle>
+
+@if (producto != null)
+{
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3><strong>Detalles de Producto</strong></h3>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="col-md-11">
+                            <h3 class="text-center"><strong>Datos del Producto</strong></h3>
+                            <div class="border-primary border border-2 border-primmary">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                                <li><strong>ProductoId:</strong> @producto.ProductoId</li>
+                                                <li><strong>Nombre:</strong> @producto.Nombre</li>
+                                                <li><strong>Descripcion:</strong> @producto.Descripcion</li>
+                                                <li><strong>Fecha Creacion:</strong> @producto.FechaCreacion</li>
+                                                <li><strong>Precio Producto:</strong> @producto.PrecioProducto</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <h3 class="text-center"><strong>Detalle de Insumos</strong></h3>
+                <div class="border-primary border border-2 border-primary">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Insumo</th>
+                                        <th>Cantidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var detalle in producto.ProductosDetalle)
+                                    {
+                                        var insumo = InsumosList.FirstOrDefault(i => i.InsumoId == detalle.InsumoId);
+                                        <tr>
+                                            <td>@insumo.Nombre</td>
+                                            <td>@detalle.Cantidad</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+else
+{
+    <p>Compra no encontrada.</p>
+}
+@code {
+    [Parameter]
+    public int ProductoId { get; set; }
+    public Productos producto { get; set; } = new Productos();
+    public List<Insumos> InsumosList { get; set; } = new List<Insumos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        producto = await productosService.GetProductos(ProductoId);
+        if (producto != null)
+        {
+            InsumosList = await insumosService.Listar(t => true);
+        }
+    }
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/IndexProducto");
+    }
+}

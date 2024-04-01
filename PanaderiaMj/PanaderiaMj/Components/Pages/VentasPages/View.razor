@@ -1,0 +1,101 @@
+﻿@page "/ViewVentas"
+@page "/ViewVentas/{VentaId:int}"
+@inject ProductosServices productosService
+@inject VentasService ventasService
+@inject ClientesServices clientesService
+
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Detalles de Ventas</PageTitle>
+
+@if (ventas != null)
+{
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header">
+                <h3><strong>Detalles de Ventas</strong></h3>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="col-md-11">
+                            <h3 class="text-center"><strong>Datos de la Venta</strong></h3>
+                            <div class="border-primary border border-2 border-primmary">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                                <li><strong>ventaId:</strong> @ventas.VentaId</li>
+                                                <li><strong>Cliente:</strong> @ventas.ClienteId</li>
+                                                <li><strong>Concepto:</strong> @ventas.Concepto</li>
+                                                <li><strong>Tipo de Venta:</strong> @ventas.TipoVenta</li>
+                                                <li><strong>Fecha:</strong> @ventas.FechaVenta</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <h3 class="text-center"><strong>Detalle de Insumos</strong></h3>
+                <div class="border-primary border border-2 border-primary">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Productos</th>
+                                        <th>Cantidad</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var detalle in ventas.DetalleVentas)
+                                    {
+                                        var producto = ProductosList.FirstOrDefault(i => i.ProductoId == detalle.ProductoId);
+                                        <tr>
+                                            <td>@producto.Nombre</td>
+                                            <td>@detalle.Cantidad</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+else
+{
+    <p>Compra no encontrada.</p>
+}
+@code {
+    [Parameter]
+    public int VentaId { get; set; }
+    public Ventas ventas { get; set; } = new Ventas();
+    public List<Clientes> ClientesList { get; set; } = new List<Clientes>();
+    public List<Productos> ProductosList { get; set; } = new List<Productos>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ventas = await ventasService.GetVentas(VentaId);
+        if (ventas != null)
+        {
+            ProductosList = await productosService.Listar(t => true);
+            ClientesList = await clientesService.Listar(t => true);
+            ventas.FechaVenta = DateTime.Now;
+        }
+    }
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/IndexProducto");
+    }
+}
