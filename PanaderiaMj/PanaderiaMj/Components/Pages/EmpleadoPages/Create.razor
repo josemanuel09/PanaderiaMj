@@ -1,0 +1,123 @@
+﻿@page "/CreateEmpleados"
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@*@inject EmpleadosService empleadosService*@
+
+<EditForm Model="empleado" OnValidSubmit="Guardar" FormName="empleadosForm">
+    <div class="card" style="max-width: 1000px; left: 50%; transform: translate(-50%);">
+        <!-- Encabezado de la Página -->
+        <div class="card-header" style="background-color: #5D5C61">
+            <div class="row" style="flex-direction: row; align-items: center;">
+                <div class="col-3">
+                    <div style="width: 100%; display: flex; justify-content: center;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png" alt="pan" style="max-width: 100%; height: auto;">
+                    </div>
+                </div>
+                <div class="col-9">
+                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Crear Empleado</strong></h1>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="EmpleadoId">Empleado Id:</label>
+                        <input type="text" class="form-control" id="EmpleadoId" @bind="empleado.EmpleadoId" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Nombre">Nombre:</label>
+                        <input type="text" class="form-control" id="Nombre" @bind="empleado.Nombre" />
+                        <ValidationMessage For="@(() => empleado.Nombre)" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Direccion">Dirección:</label>
+                        <input type="text" class="form-control" id="Direccion" @bind="empleado.Direccion" />
+                        <ValidationMessage For="@(() => empleado.Direccion)" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Telefono">Teléfono:</label>
+                        <input type="text" class="form-control" id="Telefono" @bind="empleado.Telefono" />
+                        <ValidationMessage For="@(() => empleado.Telefono)" />
+                    </div>
+                </div>
+            </div>
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+        </div>
+        <div class="card-footer text-center fs-5" style="background-color: #5D5C61">
+            <!-- Botones -->
+            <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Nuevo" type="button">
+                <span class="bi bi-plus-circle"></span> Nuevo
+            </button>
+            <button name="btnGuardar" id="btnGuardar" class="btn btn-success mr-2" type="submit">
+                <span class="bi bi-download"></span> Guardar
+            </button>
+            <button name="btnEliminar" id="btnEliminar" class="btn btn-secondary" @onclick="NavigateToMenuEmpleados" type="button">
+                <span class="bi bi-arrow-left-square-fill"></span> Volver Atrás
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public Empleados empleado { get; set; } = new Empleados();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Any initialization logic can be added here
+    }
+
+    public async Task Guardar()
+    {
+        if (ValidarGuardar())
+        {
+            Console.WriteLine("Validar...");
+            return;
+        }
+        /*var response = await empleadosService.Guardar(empleado);
+        if (!response)
+        {
+            Console.WriteLine("Error al guardar el empleado");
+            return;
+        }
+        else
+        {
+            Console.WriteLine("Empleado guardado con exito");
+            Nuevo();
+            return;
+        }*/
+    }
+
+    public bool ValidarGuardar()
+    {
+        if (string.IsNullOrWhiteSpace(empleado.Nombre))
+        {
+            return false;
+        }
+        if (string.IsNullOrWhiteSpace(empleado.Direccion))
+        {
+            return false;
+        }
+        if (string.IsNullOrWhiteSpace(empleado.Telefono))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public void Nuevo()
+    {
+        empleado = new Empleados();
+    }
+
+    public void NavigateToMenuEmpleados() => NavigationManager.NavigateTo("/MenuEmpleados");
+}

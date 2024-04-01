@@ -1,0 +1,55 @@
+﻿@page "/DeleteEmpleados/{EmpleadoId:int}"
+@*@inject EmpleadosService empleadosService*@
+
+<div class="card empleado-card">
+    <div class="card-header empleado-card-header">
+        <h1>Eliminar Empleado</h1>
+    </div>
+    <div class="card-body empleado-card-body">
+        @if (empleado != null)
+        {
+            <div class="empleado-details">
+                <h2>Empleado ID: @empleado.EmpleadoId</h2>
+                <p><strong>Nombre:</strong> @empleado.Nombre</p>
+                <p><strong>Teléfono:</strong> @empleado.Telefono</p>
+                <p><strong>Dirección:</strong> @empleado.Direccion</p>
+            </div>
+
+            <button class="btn btn-danger" @onclick="EliminarEmpleado">Eliminar Empleado</button>
+        }
+        else
+        {
+            <p>La información del empleado no está disponible o ya ha sido eliminada.</p>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int EmpleadoId { get; set; }
+
+    private Empleados empleado;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Aquí deberías llamar al servicio para obtener los detalles del empleado
+        // empleado = await empleadosService.Buscar(EmpleadoId);
+    }
+
+    private async Task EliminarEmpleado()
+    {
+        // Aquí deberías llamar al servicio para eliminar el empleado
+        // if (empleado != null)
+        // {
+        //     var response = await empleadosService.Eliminar(empleado);
+        //     if (response)
+        //     {
+        //         // Eliminación exitosa, redirigir a la página de empleados o realizar otra acción deseada
+        //     }
+        //     else
+        //     {
+        //         // Error al eliminar el empleado, manejar según sea necesario
+        //     }
+        // }
+    }
+}
