@@ -6,15 +6,15 @@
 
 <div class="main-menu">
     <div class="header">
-        <img src="Images/MenuEmpleado.png" class="logo" />
-        <h1><strong>Empleados</strong></h1>
+        <img src="Images/MenuInsumo.png" class="logo" />
+        <h1><strong>Insumos</strong></h1>
     </div>
     <div class="menu-options">
         <button class="menu-button" @onclick="NavigateMenuToVentas">
-            <img src="Images/agregarempleado.png" class="icon" /><strong>Registrar Insumo</strong>
+            <img src="Images/procesando.png" class="icon" /><strong>Registrar Insumo</strong>
         </button>
         <button class="menu-button" @onclick="NavigateToProductos">
-            <img src="Images/consultarempleado.png" class="icon" /><strong>Insumos</strong>
+            <img src="Images/conultarInsumos.png" class="icon" /><strong>Consultar Insumos</strong>
         </button>
         <!-- Botón de Volver Atrás separado visualmente -->
         <div class="back-button-container">
@@ -28,7 +28,7 @@
 @code {
     private void NavigateBack() => NavigationManager.NavigateTo("/");
     private void NavigateMenuToVentas() => NavigationManager.NavigateTo("/CreateInsumo");
-    private void NavigateToProductos() => NavigationManager.NavigateTo("/IndexInsumos");
+    private void NavigateToProductos() => NavigationManager.NavigateTo("/IndexInsumo");
 }
 
 <style>

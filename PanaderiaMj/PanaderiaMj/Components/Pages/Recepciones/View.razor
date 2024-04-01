@@ -1,5 +1,5 @@
-﻿@page "/ViewRecepciones"
-@page "/ViewRecepciones/{RecepcionId:int}"
+﻿@page "/ViewRecepcion"
+@page "/ViewRecepcion/{RecepcionId:int}"
 @inject RecepcionesServices recepcionesServices
 @inject NavigationManager navigationManager
 @inject IJSRuntime IJSRuntime
@@ -80,7 +80,7 @@
 	}
 	public void Volver()
 	{
-		navigationManager.NavigateTo("/IndexCliente");
+		navigationManager.NavigateTo("/IndexRecepcion");
 	}
 
 }

@@ -67,7 +67,17 @@
     {
         if (RecepcionId > 0)
         {
-            recepcion = await recepcionesService.GetRecepcion(RecepcionId);
+            recepcion.RecepcionId = RecepcionId;
+            await this.Buscar();
+        }
+    }
+    public async Task Buscar()
+    {
+        var recepcionEncontrada = await recepcionesService.Buscar(recepcion.RecepcionId);
+
+        if (recepcionEncontrada != null)
+        {
+            this.recepcion = recepcionEncontrada;
         }
     }
 
@@ -85,7 +95,7 @@
 
     public void Volver()
     {
-        navigationManager.NavigateTo("/IndexProducto");
+        navigationManager.NavigateTo("/IndexRecepcion");
     }
 
 }
