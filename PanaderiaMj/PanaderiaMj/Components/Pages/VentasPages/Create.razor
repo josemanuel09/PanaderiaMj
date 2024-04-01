@@ -1,0 +1,204 @@
+﻿@page "/CreateVentas"
+@inject VentasService ventasService
+@inject ClientesServices clientesService
+@inject ProductosServices productosServices
+@inject NavigationManager navigationManager
+@inject IJSRuntime IJSRuntime
+@rendermode InteractiveServer
+
+
+<EditForm Model="ventas" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="card" style="max-width: 1000px; left: 50%; transform: translate(-50%);">
+        <!-- Encabezado de la Página -->
+        <div class="card-header" style="background-color: #5D5C61">
+            <div class="row" style="flex-direction: row; align-items: center;">
+                <div class="col-3">
+                    <div style="width: 100%; display: flex; justify-content: center;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png" alt="pan" style="max-width: 100%; height: auto;">
+                    </div>
+                </div>
+                <div class="col-9">
+                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Crear Venta</strong></h1>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card-body">
+            <!-- Id y botón buscar -->
+            <div class="row">
+                <div class="col-6">
+                    <label for="txtId" class="form-label">Venta Id:</label>
+                    <div class="input-group">
+                        <input type="number" id="txtId" class="form-control" @bind-value="ventas.VentaId">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Cliente y Concepto -->
+                <div class="col-6">
+                    <label for="txtCliente" class="form-label"> Cliente:</label>
+                    <InputSelect class="form-select" @bind-Value="ventas.ClienteId" >
+                        @foreach (var cliente in ClientesList)
+                        {
+                            <option value="@cliente.ClienteId">@cliente.Nombre @cliente.Apellido</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => ventas.ClienteId)" />
+                </div>
+                <div class="col-6">
+                    <label for="txtConcepto" class="form-label"> Concepto:</label>
+                    <input type="text" id="txtEjemplo" class="form-control" @bind-value="ventas.Concepto" >
+                    <ValidationMessage For="@(() => ventas.Concepto)" />
+                </div>
+            </div>
+            <div class="row">
+                <!-- Tipo venta y Fecha -->
+                <div class="col-6">
+                    <label for="txtTipoVenta" class="form-label"> Tipo Venta:</label>
+                    <InputSelect class="form-select" @bind-Value="ventas.TipoVenta">
+                        @if (String.IsNullOrEmpty(ventas.TipoVenta))
+                        {
+                            ventas.TipoVenta = tipoVenta?.FirstOrDefault();
+                        }
+                        @if (tipoVenta != null)
+                        {
+                            @foreach (var tipo in tipoVenta)
+                            {
+                                <option value="@tipo"> @tipo </option>
+                            }
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => ventas.TipoVenta)" />
+                </div>
+                <div class="col-6">
+                    <label for="txtFecha" class="form-label"> Fecha:</label>
+                    <input type="date" id="txtFecha" class="form-control" @bind-value="ventas.FechaVenta">
+                    <ValidationMessage For="@(() => ventas.FechaVenta)" />
+                </div>
+            </div>
+            <div class="row">
+                <!-- Agregar Detalle -->
+                <div class="col-12 mt-3">
+                    <div class="card card-header">
+                        <h5>Agregar Productos</h5>
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="txtProducto" class="form-label"> Producto:</label>
+                                <InputSelect class="form-select" @bind-Value="ventasDetalle.ProductoId">
+                                    @foreach (var producto in ProductosList)
+                                    {
+                                        <option value="@producto.ProductoId">@producto.Nombre (@producto.CantidadAProducir)</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                            <div class="col-4">
+                                <label for="txtCantidad" class="form-label"> Cantidad:</label>
+                                <input type="number" id="txtCantidad" class="form-control" @bind-value="ventasDetalle.Cantidad">
+                            </div>
+                            <div class="col-4 d-flex align-items-end">
+                                <button name="btnAgregar" id="btnAgregar" class="btn btn-primary col-2" @onclick="AgregarDetalle" type="button">
+                                    <span class="bi  bi-plus-circle"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tabla detalle -->
+            <div class="table-responsive mt-3">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var detalleVenta in ventas.DetalleVentas)
+                        {
+                            <tr>
+                                <td>@detalleVenta.ProductoId</td>
+                                <td>@detalleVenta.Cantidad</td>
+                                <td>
+                                    <button name="Btn" id="Btn" class="btn btn-danger mr-2" type="button" @onclick="@(() => EliminarDetalle(detalleVenta))">
+                                        <span class="bi bi-trash"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <!-- Monto -->
+                <div class="col-6">
+                    <label class="form-label"> Total = $@ventas.MontoTotal</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer text-center fs-5" style="background-color: #5D5C61">
+            <!-- Botones -->
+            <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Nuevo" type="button">
+                <span class="bi bi-plus-circle"></span> Nuevo
+            </button>
+            <button name="btnGuardar" id="btnGuardar" class="btn btn-success mr-2" type="submit">
+                <span class="bi bi-download"></span> Guardar
+            </button>
+            <button name="btnEliminar" id="btnEliminar" class="btn btn-secondary" @onclick="Atras" type="button" disabled="@Condicion">
+                <span class="bi bi-arrow-left-square-fill"></span> Volver Atras
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int VentaId { get; set; }
+    public List<Productos> ProductosList { get; set; } = new List<Productos>();
+    public List<Clientes> ClientesList { get; set; } = new List<Clientes>();
+    public List<String> tipoVenta = new List<String> { "Contado", "Credito" };
+    public Ventas ventas { get; set; } = new Ventas();
+    public VentasDetalle ventasDetalle { get; set; } = new VentasDetalle();
+    public bool Condicion { get; set; } = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        ProductosList = await productosServices.Listar(c => true);
+        ClientesList = await clientesService.Listar(c => true);
+        ventas.FechaVenta = DateTime.Now;
+    }
+    public async Task Guardar()
+    {
+        var Guardo = await ventasService.Guardar(ventas);
+    }
+    public void AgregarDetalle()
+    {
+        if (ventasDetalle.ProductoId > 0 && ventasDetalle.Cantidad > 0)
+        {
+            ventas.DetalleVentas.Add(ventasDetalle);
+            ventasDetalle = new VentasDetalle();
+        }
+    }
+    public void EliminarDetalle(VentasDetalle detalle)
+    {
+        ventas.DetalleVentas.Remove(detalle);
+    }
+    public void Nuevo()
+    {
+        ventas = new Ventas();
+        ventasDetalle = new VentasDetalle();
+    }
+    public void Atras()
+    {
+        navigationManager.NavigateTo("/Ventas");
+    }
+
+
+}
