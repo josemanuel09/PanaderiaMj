@@ -6,6 +6,7 @@ using PanaderiaMj.Components;
 using PanaderiaMj.Components.Account;
 using PanaderiaMj.DAL;
 using PanaderiaMj.Data;
+using PanaderiaMj.Service;
 
 namespace PanaderiaMj
 {
@@ -36,6 +37,10 @@ namespace PanaderiaMj
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            builder.Services.AddScoped<ClientesServices>();
+            builder.Services.AddScoped<ProductosServices>();
+            builder.Services.AddScoped<RecepcionesServices>();
+            builder.Services.AddScoped<VentasService>();
 
             var ConStr = builder.Configuration.GetConnectionString("ConStr");
             builder.Services.AddDbContext<Contexto>(op => op.UseSqlite(ConStr));
