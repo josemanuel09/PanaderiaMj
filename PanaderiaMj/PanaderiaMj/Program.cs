@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PanaderiaMj.Client.Pages;
 using PanaderiaMj.Components;
 using PanaderiaMj.Components.Account;
+using PanaderiaMj.DAL;
 using PanaderiaMj.Data;
 
 namespace PanaderiaMj
@@ -35,6 +36,9 @@ namespace PanaderiaMj
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+            var ConStr = builder.Configuration.GetConnectionString("ConStr");
+            builder.Services.AddDbContext<Contexto>(op => op.UseSqlite(ConStr));
 
             builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
