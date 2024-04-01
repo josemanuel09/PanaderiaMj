@@ -17,7 +17,11 @@ namespace PanaderiaMj.Service
         {
             return await _contexto.Empleados.AnyAsync(c => c.EmpleadoId == EmpleadoId);
         }
-
+        public async Task<bool> ValidarNombre(string nombre)
+        {
+            var EmpleadoExistente = await _contexto.Empleados.AnyAsync(c => c.Nombre == nombre);
+            return EmpleadoExistente;
+        }
         public async Task<bool> Insertar(Empleados empleados)
         {
             _contexto.Empleados.Add(empleados);
