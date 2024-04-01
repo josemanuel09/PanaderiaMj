@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameWorkCore" Version="8.0.3" />
     <PackageReference Include="Microsoft.EntityFrameWorkCore.sqlite" Version="8.0.3" />
+    <PackageReference Include="Radzen.Blazor" Version="4.29.1" />
     <ProjectReference Include="..\PanaderiaMj.Client\PanaderiaMj.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.2" />
