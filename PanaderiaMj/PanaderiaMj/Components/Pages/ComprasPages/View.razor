@@ -1,0 +1,108 @@
+﻿@page "/ViewCompras/{CompraId:int}"
+@inject ComprasService comprasService
+@inject InsumosService insumosService
+@inject ProveedoresService proveedoresService
+@inject NavigationManager navigationManager
+
+<PageTitle>Detalles de Compra</PageTitle>
+
+@if (compra != null)
+{
+    var proveedor = ProveedoresList.FirstOrDefault(p => p.ProveedorId == compra.ProveedorId);
+    <div class="container">
+        <div class="card shadow-lg">
+            <!-- Header -->
+            <div class="card-header">
+                <h3><strong>Detalles de Compra</strong></h3>
+            </div>
+            <!-- Body -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="col-md-11">
+                            <h3 class="text-center"><strong>Datos de la Compra</strong></h3>
+                            <div class="border-primary border border-2 border-primmary">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Columna para los datos de la compra -->
+                                        <div class="col-12">
+                                            <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                                <li><strong>CompraId:</strong> @compra.CompraId</li>
+                                                <li><strong>Proveedor:</strong> @(proveedor != null ? proveedor.Nombre : "No encontrado")</li>
+                                                <li><strong>Método de Pago:</strong> @compra.MetodoDePago</li>
+                                                <li><strong>Fecha Pedida:</strong> @compra.FechaPedida</li>
+                                                <li><strong>Observaciones:</strong> @compra.Observaciones</li>
+                                                <li><strong>Monto Total:</strong> @compra.MontoTotal</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Columna para el detalle de la compra -->
+                    <div class="col-12">
+                        <h3 class="text-center"><strong>Detalle de la Compra</strong></h3>
+                        <div class="border-primary border border-2 border-primary">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Insumo</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var detalle in compra.ComprasDetalle)
+                                            {
+                                                var insumo = InsumosList.FirstOrDefault(i => i.InsumoId == detalle.InsumoId);
+                                                <tr>
+                                                    <td>@(insumo != null ? insumo.Nombre : "No encontrado")</td>
+                                                    <td>@detalle.Cantidad</td>
+                                                    <td>@detalle.Precio</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Compra no encontrada.</p>
+}
+
+@code {
+    [Parameter]
+    public int CompraId { get; set; }
+    public Compras compra { get; set; }
+    public List<Insumos> InsumosList { get; set; } = new List<Insumos>();
+    public List<Proveedores> ProveedoresList { get; set; } = new List<Proveedores>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        compra = await comprasService.GetCompras(CompraId);
+        if (compra != null)
+        {
+            InsumosList = await insumosService.Listar(t => true);
+            ProveedoresList = await proveedoresService.Listar(t => true);
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/IndexCompra");
+    }
+}
