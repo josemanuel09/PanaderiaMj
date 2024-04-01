@@ -1,0 +1,84 @@
+﻿@page "/DeleteVenta"
+@page "/DeleteVenta/{VentaId:int}"
+@inject VentasService ventasService
+@inject ClientesServices clientesService
+@inject ProductosServices productosServices
+@inject NavigationManager navigationManager
+@inject IJSRuntime IJSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Eliminar Venta</PageTitle>
+
+<div class="container">
+    <div class="card shadow-header">
+        <!-- Header -->
+        <div class="card-header">
+            <h3><strong>Eliminar Venta</strong></h3>
+        </div>
+        <div class="card-header">
+            <h3 class="text-danger">¿Estás seguro de que quieres eliminar la venta?</h3>
+        </div>
+        <!-- Body -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <div class="col-md-11">
+                        <h3 class="text-center"><strong>Datos de la venta</strong></h3>
+                        <div class="border-primary border border-2 border-primmary">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Columna para los datos del producto -->
+                                    <div class="col-12">
+                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                            <li><strong>VentaId:</strong> @ventas.VentaId</li>
+                                            <li><strong>Cliente:</strong> @ventas.ClienteId</li>
+                                            <li><strong>Concepto:</strong> @ventas.Concepto</li>
+                                            <li><strong>Tipo Venta:</strong> @ventas.TipoVenta</li>
+                                            <li><strong>Fecha de Venta:</strong> @ventas.FechaVenta.ToShortDateString()</li>
+                                            
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="card-footer">
+            <button type="button" class="btn btn-outline-danger" @onclick="EliminarVenta"><i class="bi bi-trash-fill"></i> Eliminar</button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int VentaId { get; set; }
+    public Ventas ventas { get; set; } = new Ventas();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (VentaId > 0)
+        {
+            ventas = await ventasService.GetVentas(VentaId);
+        }
+    }
+    public async Task EliminarVenta()
+    {
+        if (!await ventasService.Existe(VentaId))
+        {
+            return;
+        }
+        if (await ventasService.Eliminar(ventas))
+        {
+            Volver();
+        }
+    }
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/Ventas");
+    }
+
+}
