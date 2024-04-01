@@ -3,8 +3,10 @@
 @inject InsumosService insumosService
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
+@inject NotificationService notificationService
 @rendermode InteractiveServer
 
+<RadzenNotification />
 <PageTitle>Eliminar Insumo</PageTitle>
 <div class="container">
     <div class="card shadow-header">
@@ -75,11 +77,39 @@
     {
         if (!await insumosService.Existe(insumo.InsumoId))
         {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "El insumo no existe.",
+                    Duration = 5000
+                };
+            notificationService.Notify(mensajeError);
             return;
         }
-        if (await insumosService.Eliminar(this.insumo))
+
+        if (await insumosService.Eliminar(insumo))
         {
+            var mensajeExito = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Success,
+                    Summary = "Éxito",
+                    Detail = "El insumo se eliminó correctamente.",
+                    Duration = 5000
+                };
+            notificationService.Notify(mensajeExito);
             Volver();
+        }
+        else
+        {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "No se pudo eliminar el insumo.",
+                    Duration = 5000
+                };
+            notificationService.Notify(mensajeError);
         }
     }
 
