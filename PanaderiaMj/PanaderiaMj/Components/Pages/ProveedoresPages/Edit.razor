@@ -1,0 +1,152 @@
+﻿@page "/EditProveedor"
+@page "/EditProveedor/{ProveedorId:Int}"
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject ProveedoresService proveedoresService
+@rendermode InteractiveServer
+
+<EditForm Model="proveedor" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="card" style="max-width: 1000px; left: 50%; transform: translate(-50%);">
+        <!-- Encabezado de la Página -->
+        <div class="card-header" style="background-color: #5D5C61">
+            <div class="row" style="flex-direction: row; align-items: center;">
+                <div class="col-3">
+                    <div style="width: 100%; display: flex; justify-content: center;">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1019/1019607.png" alt="pan" style="max-width: 100%; height: auto;">
+                    </div>
+                </div>
+                <div class="col-9">
+                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Crear Proveedor</strong></h1>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @* @* <div class="col-md-6">
+                <div class="form-group">
+                <label for="ProveedorId">Proveedor Id:</label>
+                <input type="text" class="form-control" id="ProveedorId" @bind="proveedor.ProveedorId" />
+                </div>
+                </div> *@
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Fecha"> Fecha:</label>
+                        <InputDate @bind-Value="proveedor.Fecha" class="form-control" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Email">Correo Electrónico:</label>
+                        <InputText @bind-Value="proveedor.Email" class="form-control" />
+                        <ValidationMessage For="@(() => proveedor.Email)" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Nombre">Nombre:</label>
+                        <InputText @bind-Value="proveedor.Nombre" class="form-control" />
+                        <ValidationMessage For="@(() => proveedor.Nombre)" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Direccion">Dirección:</label>
+                        <InputText @bind-Value="proveedor.Direccion" class="form-control" />
+                        <ValidationMessage For="@(() => proveedor.Direccion)" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Telefono">Teléfono:</label>
+                        <InputText @bind-Value="proveedor.Telefono" class="form-control" />
+                        <ValidationMessage For="@(() => proveedor.Telefono)" />A
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="RNC">RNC:</label>
+                        <InputText @bind-Value="proveedor.RNC" class="form-control" />
+                        <ValidationMessage For="@(() => proveedor.RNC)" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="TipoContribuyente">Tipo de Contribuyente:</label>
+                        <InputSelect @bind-Value="proveedor.TipoContribuyente" class="form-control">
+                            <option value="0" selected hidden>Seleccione</option>
+                            @foreach (var tipoContribuyente in TipoContribuyente)
+                            {
+                                <option value="@tipoContribuyente">@tipoContribuyente</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => proveedor.TipoContribuyente)" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-center fs-5" style="background-color: #5D5C61">
+            <!-- Botones -->
+            <button type="button" class="btn btn-success bi bi-pencil" @onclick="Guardar">Editar</button>
+            <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Atras" type="button">
+                <span class="bi bi-arrow-return-left"></span>Volver Atrás
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int ProveedorId { get; set; }
+
+    public Proveedores proveedor { get; set; } = new Proveedores();
+    public List<String> TipoContribuyente = new List<String> { "Persona Fisica", "Persona Juridica" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ProveedorId > 0)
+        {
+            proveedor.ProveedorId = ProveedorId;
+            await this.Buscar();
+        }
+    }
+
+    public async Task Buscar()
+    {
+        var proveedorEncontrado = await proveedoresService.Buscar(proveedor.ProveedorId);
+
+        if (proveedorEncontrado != null)
+        {
+            this.proveedor = proveedorEncontrado;
+        }
+    }
+    public async Task Guardar()
+    {
+        await proveedoresService.Guardar(proveedor);
+
+    }
+
+
+    public void Nuevo()
+    {
+        proveedor = new Proveedores();
+        ProveedorId = 0;
+    }
+    public void Atras()
+    {
+        NavigationManager.NavigateTo("/IndexProveedor");
+    }
+
+
+
+
+
+
+}
