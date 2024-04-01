@@ -1,4 +1,4 @@
-﻿@page "/MenuCompras"
+﻿@page "/MenuRecepciones"
 @rendermode InteractiveServer
 
 @inject NavigationManager NavigationManager
@@ -6,17 +6,16 @@
 
 <div class="main-menu">
     <div class="header">
-        <img src="Images/compras.png" class="logo" />
-        <h1><strong>Compras</strong></h1>
+        <img src="Images/recepciones.png" class="logo" />
+        <h1><strong>Recepciones</strong></h1>
     </div>
     <div class="menu-options">
         <button class="menu-button" @onclick="NavigateMenuToVentas">
-            <img src="Images/agregarcompra.png" class="icon" /><strong>Registrar Compra</strong>
+            <img src="Images/CrearRecepcion.png" class="icon" /><strong>Registrar Recepcion</strong>
         </button>
         <button class="menu-button" @onclick="NavigateToProductos">
-            <img src="Images/pedido.png" class="icon" /><strong>Inventario de Compras</strong>
+            <img src="Images/registrarse.png" class="icon" /><strong>Consultar Recepciones</strong>
         </button>
-        <!-- Botón de Volver Atrás separado visualmente -->
         <div class="back-button-container">
             <button class="menu-button back-button" @onclick="NavigateBack">
                 <img src="Images/volver.png" class="icon" /><strong>Volver Atrás</strong>
@@ -27,8 +26,8 @@
 
 @code {
     private void NavigateBack() => NavigationManager.NavigateTo("/");
-    private void NavigateMenuToVentas() => NavigationManager.NavigateTo("/CreateCompra");
-    private void NavigateToProductos() => NavigationManager.NavigateTo("/IndexCompra");
+    private void NavigateMenuToVentas() => NavigationManager.NavigateTo("/CreateRecepcion");
+    private void NavigateToProductos() => NavigationManager.NavigateTo("/IndexRecepcion");
 }
 
 <style>

@@ -2,7 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @rendermode InteractiveServer
 
-@attribute [Authorize]
+@* @attribute [Authorize] *@
 @inject NavigationManager NavigationManager
 <PageTitle>Menú Principal</PageTitle>
 
@@ -35,6 +35,9 @@
         <button class="menu-button" @onclick="NavigateToInsumos">
             <img src="Images/MenuInsumo.png" class="icon" /><strong>Insumos</strong>
         </button>
+        <button class="menu-button" @onclick="NavigateToRecepciones">
+            <img src="Images/recepciones.png" class="icon" /><strong>Recepciones</strong>
+        </button>
     </div>
 </div>
 
@@ -44,7 +47,7 @@
     private void NavigateToEmpleados() => NavigationManager.NavigateTo("/MenusEmpleados");
     private void NavigateToPedidos() => NavigationManager.NavigateTo("/MenuClientes");
     private void NavigateToInventario() => NavigationManager.NavigateTo("/MenuProveedores");
-    private void NavigateToRecepciones() => NavigationManager.NavigateTo("/recepciones");
+    private void NavigateToRecepciones() => NavigationManager.NavigateTo("/MenuRecepciones");
     private void NavigateToCompras() => NavigationManager.NavigateTo("/MenuCompras");
     private void NavigateToInsumos() => NavigationManager.NavigateTo("/MenuInsumos");
 
