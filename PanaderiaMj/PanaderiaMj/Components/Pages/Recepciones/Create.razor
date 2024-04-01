@@ -21,7 +21,7 @@
                     <div class="form-group">
                         <label>Producto:</label>
                         <InputSelect @bind-Value="recepcion.ProductoId" class="form-control">
-                            <option value="">Seleccione un Producto</option>
+                            <option value="0">Seleccione un Producto</option>
                             @foreach (var producto in productosList)
                             {
                                 <option value=@producto.ProductoId>@producto.Nombre</option>

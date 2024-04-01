@@ -40,6 +40,7 @@
                 <div class="col-6">
                     <label for="txtProveedor" class="form-label"> Proveedor:</label>
                     <InputSelect class="form-select" @bind-Value="compra.ProveedorId">
+                        <option value="0" selected hidden>Seleccione...</option>
                         @foreach (var proveedor in ProveedoresList)
                         {
                             <option value="@proveedor.ProveedorId">@proveedor.Nombre</option>
@@ -50,6 +51,7 @@
                 <div class="col-6">
                     <label for="txtMetodoPago" class="form-label"> M&eacute;todo de Pago:</label>
                     <InputSelect class="form-select" @bind-Value="compra.MetodoDePago">
+                        <option value="0" selected hidden>Seleccione...</option>
                         @foreach (var metodo in MetodoPago)
                         {
                             <option value="@metodo">@metodo</option>
@@ -85,6 +87,7 @@
                             <div class="col-3">
                                 <label for="txtInsumo" class="form-label"> Insumo:</label>
                                 <InputSelect class="form-select" @bind-Value="compraDetalle.InsumoId">
+                                    <option value="0" selected hidden>Seleccione....</option>
                                     @foreach (var insumo in InsumosList)
                                     {
                                         <option value="@insumo.InsumoId">@insumo.Nombre</option>

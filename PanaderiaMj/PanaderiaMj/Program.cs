@@ -52,7 +52,7 @@ namespace PanaderiaMj
             var ConStr = builder.Configuration.GetConnectionString("ConStr");
             builder.Services.AddDbContext<Contexto>(op => op.UseSqlite(ConStr));
 
-            builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
