@@ -1,0 +1,84 @@
+﻿@page "/DeleteProducto"
+@page "/DeleteProducto/{ProductoId:int}"
+@inject ProductosServices productosService
+@inject NavigationManager navigationManager
+@inject IJSRuntime IJSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Eliminar Producto</PageTitle>
+
+<div class="container">
+    <div class="card shadow-header">
+        <!-- Header -->
+        <div class="card-header">
+            <h3><strong>Eliminar Producto</strong></h3>
+        </div>
+        <div class="card-header">
+            <h3 class="text-danger">¿Estás seguro de que quieres eliminar el producto?</h3>
+        </div>
+        <!-- Body -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <div class="col-md-11">
+                        <h3 class="text-center"><strong>Datos del Producto</strong></h3>
+                        <div class="border-primary border border-2 border-primmary">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Columna para los datos del producto -->
+                                    <div class="col-12">
+                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                            <li><strong>ProductoId:</strong> @producto.ProductoId</li>
+                                            <li><strong>Nombre:</strong> @producto.Nombre</li>
+                                            <li><strong>Descripción:</strong> @producto.Descripcion</li>
+                                            <li><strong>Fecha de Creación:</strong> @producto.FechaCreacion.ToShortDateString()</li>
+                                            <li><strong>Precio:</strong> @producto.PrecioProducto</li>
+                                            <li><strong>Cantidad a Producir:</strong> @producto.CantidadAProducir</li>
+                                            <li><strong>Nota:</strong> @producto.Nota</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="card-footer">
+            <button type="button" class="btn btn-outline-danger" @onclick="EliminarProducto"><i class="bi bi-trash-fill"></i> Eliminar</button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int ProductoId { get; set; }
+    public Productos producto { get; set; } = new Productos();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ProductoId > 0)
+        {
+            producto = await productosService.GetProductos(ProductoId);
+        }
+    }
+
+    public async Task EliminarProducto()
+    {
+        if (!await productosService.Existe(ProductoId))
+        {
+            return;
+        }
+        if (await productosService.Eliminar(producto))
+        {
+            Volver();
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/IndexProducto");
+    }
+}
