@@ -41,6 +41,10 @@ namespace PanaderiaMj
             builder.Services.AddScoped<ProductosServices>();
             builder.Services.AddScoped<RecepcionesServices>();
             builder.Services.AddScoped<VentasService>();
+            builder.Services.AddScoped<ComprasService>();
+            builder.Services.AddScoped<InsumosService>();
+            builder.Services.AddScoped<ProveedoresService>();
+            builder.Services.AddScoped<EmpleadosService>();
 
             var ConStr = builder.Configuration.GetConnectionString("ConStr");
             builder.Services.AddDbContext<Contexto>(op => op.UseSqlite(ConStr));
