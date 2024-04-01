@@ -2,11 +2,13 @@
 @page "/DeleteCompra/{CompraId:int}"
 @inject ComprasService comprasService
 @inject NavigationManager navigationManager
+@inject InsumosService insumosService
+@inject ProveedoresService proveedoresService
 @inject IJSRuntime IJSRuntime
 @rendermode InteractiveServer
 
+<RadzenNotification />
 <PageTitle>Detalles de Compra</PageTitle>
-
 <div class="container">
     <div class="card shadow-header">
         <!-- Header -->
@@ -41,6 +43,35 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-12">
+                    <h3 class="text-center"><strong>Detalle de la Compra</strong></h3>
+                    <div class="border-primary border border-2 border-primary">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Insumo</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var detalle in compra.ComprasDetalle)
+                                        {
+                                            var insumo = InsumosList.FirstOrDefault(i => i.InsumoId == detalle.InsumoId);
+                                            <tr>
+                                                <td>@(insumo != null ? insumo.Nombre : "No encontrado")</td>
+                                                <td>@detalle.Cantidad</td>
+                                                <td>@detalle.Precio</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- Footer -->
@@ -56,12 +87,16 @@
     public int CompraId { get; set; }
     public Compras compra { get; set; } = new Compras();
     public string proveedorNombre { get; set; }
+    public List<Insumos> InsumosList { get; set; } = new List<Insumos>();
+    public List<Proveedores> ProveedoresList { get; set; } = new List<Proveedores>();
 
     protected override async Task OnInitializedAsync()
     {
         if (CompraId > 0)
         {
             compra = await comprasService.GetCompras(CompraId);
+            InsumosList = await insumosService.Listar(t => true);
+            ProveedoresList = await proveedoresService.Listar(t => true);
         }
     }
 
