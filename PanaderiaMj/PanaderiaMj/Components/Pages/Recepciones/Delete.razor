@@ -1,0 +1,91 @@
+﻿@page "/DeleteRecepcion"
+@page "/DeleteRecepcion/{Recepcion:int}"
+@inject RecepcionesServices recepcionesService
+@inject NavigationManager navigationManager
+@inject IJSRuntime IJSRuntime
+@rendermode InteractiveServer
+
+
+
+<PageTitle>Detalles de Recepciones</PageTitle>
+<div class="container">
+    <div class="card shadow-header">
+        <!-- Header -->
+        <div class="card-header">
+            <h3><strong>Eliminar de Recepcion</strong></h3>
+        </div>
+        <div class="card-header">
+            <h3 class="text-danger">¿Estás seguro de que quieres eliminar la recepcion?</h3>
+        </div>
+        <!-- Cuerpo -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <div class="col-md-11">
+                        <h3 class="text-center"><strong>Datos de la recepcion</strong></h3>
+                        <div class="border-primmary border border-2 borde">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Columna para la imagen -->
+                                    <div class="col-2">
+                                        <div class="text-center">
+                                            <img src="Images/ventas.png" alt="Imagen" class="img-fluid img-thumbnail" style="width: 100px; height: auto;">
+                                        </div>
+                                    </div>
+                                    <!-- Columna para los datos del cliente -->
+                                    <div class="col-9">
+                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                            <li><strong>RecepcionId: @recepcion.RecepcionId</strong></li>
+                                            <li><strong>Producto: @recepcion.ProductoId</strong></li>
+                                            <li><strong>Concepto: @recepcion.Concepto</strong></li>
+                                            <li><strong>Cantidad: @recepcion.Cantidad</strong> </li>
+                                            <li><strong>Fecha: @recepcion.Fecha</strong></li>
+                                            
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="card-footer">
+            <button type="button" class="btn btn-outline-danger" @onclick="Eliminar"><i class="bi bi-trash-fill"></i> Eliminar</button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int RecepcionId { get; set; }
+    public Recepciones recepcion { get; set; } = new Recepciones();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (RecepcionId > 0)
+        {
+            recepcion = await recepcionesService.GetRecepcion(RecepcionId);
+        }
+    }
+
+    public async Task Eliminar()
+    {
+        if (!await recepcionesService.Existe(RecepcionId))
+        {
+            return;
+        }
+        if (await recepcionesService.Eliminar(recepcion))
+        {
+            Volver();
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/IndexProducto");
+    }
+
+}
