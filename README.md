@@ -51,7 +51,7 @@ rapido
 ## Compras
 ![Imagen de WhatsApp 2024-04-01 a las 18 24 54_4a4c3f48](https://github.com/josemanuel09/PanaderiaMj/assets/144046221/1990b07f-2a9f-41d2-ba02-5467c9b469d7)
 
-##Crear Compras
+## Crear Compras
 ![Imagen de WhatsApp 2024-04-01 a las 18 27 00_71d4eacd](https://github.com/josemanuel09/PanaderiaMj/assets/144046221/08472e46-c3f3-43a8-8425-4c3eb34fc2b0)
 
 ## Consulta de Compras
