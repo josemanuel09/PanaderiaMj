@@ -133,7 +133,6 @@
             return;
         }
 
-        // Guardar el cliente si pasa las validaciones
         await clienteservice.Guardar(cliente);
         Guardo = true;
         var mensajeExito = new NotificationMessage

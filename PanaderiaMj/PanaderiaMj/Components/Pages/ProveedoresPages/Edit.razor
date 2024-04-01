@@ -127,7 +127,6 @@
 
     public async Task Guardar()
     {
-        // Validar que el RNC no sea igual a otros proveedores
         var proveedores = await proveedoresService.Listar(t => t.RNC == proveedor.RNC && t.ProveedorId != proveedor.ProveedorId);
         if (proveedores.Any())
         {
