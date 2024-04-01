@@ -1,0 +1,102 @@
+﻿@page "/CreateRecepcion"
+@rendermode InteractiveServer
+@inject NavigationManager Navigation
+@inject RecepcionesServices recepcionesService
+
+<EditForm Model="recepcion" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card" style="max-width: 1000px; margin: 0 auto;">
+        <div class="card-header" style="background-color: #5D5C61; color: white; text-align: center;">
+            <img src="/Images/clientes.png" alt="Titulo" style="max-width: 50%; height: auto; margin-bottom: 10px;">
+            <h1>Crear Cliente</h1>
+        </div>
+
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Producto:</label>
+                        <InputSelect @bind-Value="recepcion.ProductoId" class="form-control">
+                            <option value="0">Seleccione un producto</option>
+                            @foreach (var producto in productos)
+                            {
+                                <option value="@producto.ProductoId">@producto.Nombre</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => recepcion.ProductoId)" />
+                        
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Concepto:</label>
+                        <InputText @bind-Value="recepcion.Concepto" class="form-control" />
+                        <ValidationMessage For="@(() => recepcion.Concepto)" />
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad:</label>
+                        <InputNumber @bind-Value="recepcion.Cantidad" class="form-control" />
+                        <ValidationMessage For="@(() => recepcion.Cantidad)" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Fecha:</label>
+                        <InputDate @bind-Value="recepcion.Fecha" class="form-control" />
+                        <ValidationMessage For="@(() => recepcion.Fecha)" />
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="card-footer text-center" style="background-color: #5D5C61;">
+            <button type="button" class="btn btn-success bi bi-floppy-fill" @onclick="Guardar">Guardar</button>
+            <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Atras" type="button">
+                <span class="bi bi-arrow-return-left"></span>Volver Atrás
+            </button>
+        </div>
+
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int RecepcionId { get; set; }
+    public Recepciones recepcion { get; set; } = new Recepciones();
+    public List<Productos> productos { get; set; } = new List<Productos>();
+    public string Mensaje = " ";
+    private bool nombreexistente = false;
+    private bool cedulaexistente = false;
+    private bool Guardo = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (RecepcionId > 0)
+        {
+            this.recepcion.RecepcionId = RecepcionId;
+            await this.Buscar();
+        }
+
+        recepcion.Fecha = DateTime.Now;
+    }
+    public async Task Buscar()
+    {
+        var recepcionEncontrada = await recepcionesService.Buscar(recepcion.RecepcionId);
+
+        if (recepcionEncontrada != null)
+        {
+            this.recepcion = recepcionEncontrada;
+        }
+    }
+    public async Task Guardar()
+    {
+        await recepcionesService.Guardar(recepcion);
+        Guardo = true;
+    }
+
+    void Atras()
+    {
+        Navigation.NavigateTo("/MenuClientes");
+    }
+}

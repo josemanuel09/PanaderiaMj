@@ -1,0 +1,86 @@
+﻿@page "/ViewRecepciones"
+@page "/ViewRecepciones/{RecepcionId:int}"
+@inject RecepcionesServices recepcionesServices
+@inject NavigationManager navigationManager
+@inject IJSRuntime IJSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Detalles de la Recepcion</PageTitle>
+<div class="container">
+	<div class="card shadow-lg">
+		@*Header*@
+		<div class="card-header">
+			<h3><strong>Detalles de la Recepcion</strong></h3>
+		</div>
+		@*Cuerpo*@
+		<div class="card-body">
+			<div class="row">
+				<div class="col-8">
+					<div class="col-md-11">
+						<h3 class="text-center"><strong>Datos de la Recepcion</strong></h3>
+						<div class="border-primmary border border-2 borde">
+							<div class="card-body">
+								<div class="row">
+									<!-- Columna para la imagen -->
+									<div class="col-2">
+										<div class="text-center">
+											<img src="Images/ventas.png" alt="Imagen" class="img-fluid img-thumbnail" style="width: 100px; height: auto;">
+										</div>
+									</div>
+									<!-- Columna para los datos del proveedor -->
+									<div class="col-9">
+										<ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+											<li><strong>Recepcion Id: @recepcion.RecepcionId</strong></li>
+											<li><strong>Producto: @recepcion.ProductoId</strong></li>
+											<li><strong>Concepto: @recepcion.Concepto</strong> </li>
+											<li><strong>Cantidad: @recepcion.Cantidad</strong></li>
+											<li><strong>Fecha: @recepcion.Fecha</strong></li>
+											
+
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- Columna para el detalle del proveedor -->
+
+			</div>
+		</div>
+		@*Footer*@
+		<div class="card-footer">
+			<button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left" /> Volver</button>
+		</div>
+	</div>
+</div>
+
+
+@code {
+	[Parameter]
+	public int RecepcionId { get; set; }
+	public Recepciones recepcion { get; set; } = new Recepciones();
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (RecepcionId > 0)
+		{
+			recepcion.RecepcionId = RecepcionId;
+			await this.Buscar();
+		}
+	}
+	public async Task Buscar()
+	{
+		var recepcionEncontrada = await recepcionesServices.Buscar(recepcion.RecepcionId);
+
+		if (recepcionEncontrada != null)
+		{
+			this.recepcion = recepcionEncontrada;
+		}
+	}
+	public void Volver()
+	{
+		navigationManager.NavigateTo("/IndexCliente");
+	}
+
+}

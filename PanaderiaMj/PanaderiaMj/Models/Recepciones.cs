@@ -12,7 +12,7 @@ namespace PanaderiaMj.Models
         public int ProductoId { get; set; }
 
         [Required(ErrorMessage = "El Concepto es requerido")]
-        public String? Concepto { get; set; }
+        public string? Concepto { get; set; }
         [Required(ErrorMessage = "La cantidad es requerida")]
         [Range(1, int.MaxValue, ErrorMessage = "La cantidad debe ser mayor que 0")]
         public int Cantidad { get; set; }
