@@ -3,11 +3,13 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 @inject ProveedoresService proveedoresService
+@inject NotificationService NotificationService
 @rendermode InteractiveServer
 
+
+<RadzenNotification />
 <EditForm Model="proveedor" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
-
     <div class="card" style="max-width: 1000px; left: 50%; transform: translate(-50%);">
         <!-- Encabezado de la Página -->
         <div class="card-header" style="background-color: #5D5C61">
@@ -18,18 +20,12 @@
                     </div>
                 </div>
                 <div class="col-9">
-                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Crear Proveedor</strong></h1>
+                    <h1 style="text-align: center; color: #FFFFFF;"><strong>Editar Proveedor</strong></h1>
                 </div>
             </div>
         </div>
         <div class="card-body">
             <div class="row">
-                @* @* <div class="col-md-6">
-                <div class="form-group">
-                <label for="ProveedorId">Proveedor Id:</label>
-                <input type="text" class="form-control" id="ProveedorId" @bind="proveedor.ProveedorId" />
-                </div>
-                </div> *@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="Fecha"> Fecha:</label>
@@ -65,7 +61,7 @@
                     <div class="form-group">
                         <label for="Telefono">Teléfono:</label>
                         <InputText @bind-Value="proveedor.Telefono" class="form-control" />
-                        <ValidationMessage For="@(() => proveedor.Telefono)" />A
+                        <ValidationMessage For="@(() => proveedor.Telefono)" />
                     </div>
                 </div>
             </div>
@@ -94,13 +90,14 @@
         </div>
         <div class="card-footer text-center fs-5" style="background-color: #5D5C61">
             <!-- Botones -->
-            <button type="button" class="btn btn-success bi bi-pencil" @onclick="Guardar">Editar</button>
+            <button type="button" class="btn btn-success bi bi-floppy-fill" @onclick="Guardar">Editar</button>
             <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Atras" type="button">
                 <span class="bi bi-arrow-return-left"></span>Volver Atrás
             </button>
         </div>
     </div>
 </EditForm>
+
 
 @code {
     [Parameter]
@@ -127,26 +124,60 @@
             this.proveedor = proveedorEncontrado;
         }
     }
+
     public async Task Guardar()
     {
+        // Validar que el RNC no sea igual a otros proveedores
+        var proveedores = await proveedoresService.Listar(t => t.RNC == proveedor.RNC && t.ProveedorId != proveedor.ProveedorId);
+        if (proveedores.Any())
+        {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "El RNC ingresado ya pertenece a otro proveedor.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
+            return;
+        }
+
+        // Validar que el Nombre no sea igual a otros proveedores
+        proveedores = await proveedoresService.Listar(t => t.Nombre == proveedor.Nombre && t.ProveedorId != proveedor.ProveedorId);
+        if (proveedores.Any())
+        {
+            var mensajeError = new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = "Error",
+                    Detail = "El nombre ingresado ya pertenece a otro proveedor.",
+                    Duration = 5000
+                };
+            NotificationService.Notify(mensajeError);
+            return;
+        }
+
         await proveedoresService.Guardar(proveedor);
 
+        var mensajeExito = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Éxito",
+                Detail = "El proveedor se ha guardado correctamente.",
+                Duration = 5000
+            };
+        NotificationService.Notify(mensajeExito);
     }
-
 
     public void Nuevo()
     {
         proveedor = new Proveedores();
         ProveedorId = 0;
     }
+
     public void Atras()
     {
-        NavigationManager.NavigateTo("/IndexProveedor");
+        NavigationManager.NavigateTo("/MenuProveedores");
     }
-
-
-
-
-
-
 }
+
