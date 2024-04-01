@@ -24,6 +24,6 @@ namespace PanaderiaMj.Models
         public string? Nota { get; set; }
 
         [ForeignKey("ProductoId")]
-        public ICollection<ProductosDetalle> ProductosDetalle { get; set; } = new List<ProductosDetalle>()
+        public ICollection<ProductosDetalle> ProductosDetalle { get; set; } = new List<ProductosDetalle>();
     }
 }
