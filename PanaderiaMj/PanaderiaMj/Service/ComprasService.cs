@@ -54,6 +54,7 @@ namespace PanaderiaMj.Service
         {
             return await _contexto.Compras
                 .Where(c => c.CompraId == CompraId)
+                .Include(c => c.ComprasDetalle)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
         }
