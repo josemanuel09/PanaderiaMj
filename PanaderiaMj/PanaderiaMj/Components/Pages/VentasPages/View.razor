@@ -51,6 +51,7 @@
                                     <tr>
                                         <th>Productos</th>
                                         <th>Cantidad</th>
+                                        <th>Precio</th>
 
                                     </tr>
                                 </thead>
@@ -61,6 +62,8 @@
                                         <tr>
                                             <td>@producto.Nombre</td>
                                             <td>@detalle.Cantidad</td>
+                                            <td>@detalle.Precio</td>
+
                                         </tr>
                                     }
                                 </tbody>
@@ -68,6 +71,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            @*Footer*@
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left" /> Volver</button>
             </div>
         </div>
     </div>
