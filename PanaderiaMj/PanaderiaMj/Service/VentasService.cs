@@ -17,6 +17,10 @@ namespace PanaderiaMj.Service
         {
             return await _contexto.Ventas.AnyAsync(c => c.VentaId == VentaId);
         }
+        public async Task<Ventas?> GetVentas(int id)
+        {
+            return await _contexto.Ventas.Include(c => c.DetalleVentas).FirstOrDefaultAsync(c => c.VentaId == id);
+        }
 
         public async Task<bool> Insertar(Ventas ventas)
         {
