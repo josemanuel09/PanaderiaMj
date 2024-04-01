@@ -1,14 +1,104 @@
 ﻿@inherits LayoutComponentBase
+@implements IDisposable
+@inject NavigationManager NavigationManager
 <RadzenNotification />
+<style>
+    .page {
+        background-image: url(/Images/fondo2.jpg);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        height: 100vh;
+    }
+    .jose{
+        margin-top: 15px;
+    }
+
+    .top-row {
+        background-color: #F7F7F7 !important;
+        padding: 10px 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .container-fluid {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .miMensaje {
+        color: #000000;
+    }
+
+    #blazor-error-ui {
+        display: none;
+    }
+
+    #blazor-error-ui[style*="display: block"] {
+            display: block !important;
+    }
+
+    a {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        
+    }
+</style>
 
 <div class="page">
-    <div class="sidebar">
+    @* <div class="sidebar">
         <NavMenu />
-    </div>
+    </div> *@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            <div class="container-fluid d-flex align-items-center">
+                <AuthorizeView>
+                    <Authorized>
+                        <a href="/">
+                            <img src="/Images/Logo.png"
+                                style="max-width: 30px; height: auto; margin-bottom: 10px;" />
+                        </a>
+                        <a href="/">
+                            <h5 class="jose"><strong>PanaderiaMj</strong></h5>
+                        </a>
+                        @* <div class="nav-item ml-auto">
+                            <a href="Account/Manage" class="nav-link">
+                                <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> Configuraci&oacute;n
+                            </a>
+                        </div> *@
+                        <div class="nav-item">
+                            <a href="Account/Logout"
+                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                         class="nav-link">
+                                         <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+                                     
+                                     </a>
+                                     <form id="logout-form" method="post" action="Account/Logout" style="display: none;">
+                                         <AntiforgeryToken />
+                                         <input type="hidden" name="returnUrl" />
+                                      </form>
+                        </div>
+                    </Authorized>
+                    <NotAuthorized>
+                        <img src="/Images/Logo.png" alt="PanaderiaMj" style="width: 30px; height: auto; margin-right: 10px;" />
+
+                        <h5 class="jose"><strong>PanaderiaMj</strong></h5>
+                        <div class="nav-item ml-auto">
+                            <NavLink class="nav-link" href="Account/Register">
+                                <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> Register
+                             </NavLink>
+                        </div>
+                        <div class="nav-item">
+                            <NavLink class="nav-link" href="Account/Login">
+                                <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Login
+                             </NavLink>
+                        </div>
+                     </NotAuthorized>
+                </AuthorizeView>
+
+                    
+            </div>
         </div>
 
         <article class="content px-4">
@@ -22,3 +112,23 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+@code  {
+    private string? currentUrl;
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}
