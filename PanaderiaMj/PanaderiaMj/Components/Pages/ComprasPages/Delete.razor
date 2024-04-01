@@ -1,0 +1,84 @@
+﻿@page "/DeleteCompra"
+@page "/DeleteCompra/{CompraId:int}"
+@inject ComprasService comprasService
+@inject NavigationManager navigationManager
+@inject IJSRuntime IJSRuntime
+@rendermode InteractiveServer
+
+<PageTitle>Detalles de Compra</PageTitle>
+
+<div class="container">
+    <div class="card shadow-header">
+        <!-- Header -->
+        <div class="card-header">
+            <h3><strong>Eliminar Compra</strong></h3>
+        </div>
+        <div class="card-header">
+            <h3 class="text-danger">¿Estás seguro de que quieres eliminar la compra?</h3>
+        </div>
+        <!-- Cuerpo -->
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <div class="col-md-11">
+                        <h3 class="text-center"><strong>Datos de la Compra</strong></h3>
+                        <div class="border-primary border border-2 border-primmary">
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Columna para los datos de la compra -->
+                                    <div class="col-12">
+                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                            <li><strong>CompraId:</strong> @compra.CompraId</li>
+                                            <li><strong>Proveedor:</strong> @proveedorNombre</li>
+                                            <li><strong>Método de Pago:</strong> @compra.MetodoDePago</li>
+                                            <li><strong>Fecha Pedida:</strong> @compra.FechaPedida</li>
+                                            <li><strong>Observaciones:</strong> @compra.Observaciones</li>
+                                            <li><strong>Monto Total:</strong> @compra.MontoTotal</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div class="card-footer">
+            <button type="button" class="btn btn-outline-danger" @onclick="EliminarCompra"><i class="bi bi-trash-fill"></i> Eliminar</button>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int CompraId { get; set; }
+    public Compras compra { get; set; } = new Compras();
+    public string proveedorNombre { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (CompraId > 0)
+        {
+            compra = await comprasService.GetCompras(CompraId);
+        }
+    }
+
+    public async Task EliminarCompra()
+    {
+        if (!await comprasService.Existe(CompraId))
+        {
+            return;
+        }
+        if (await comprasService.Eliminar(compra))
+        {
+            Volver();
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/IndexCompra");
+    }
+}
