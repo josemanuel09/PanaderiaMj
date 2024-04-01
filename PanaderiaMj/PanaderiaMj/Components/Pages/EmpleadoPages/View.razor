@@ -1,0 +1,70 @@
+﻿@page "/ViewEmpleados/{EmpleadoId:int}"
+@*@inject EmpleadosService empleadosService*@
+
+<div class="card empleado-card">
+    <div class="card-header empleado-card-header">
+        <h1>Detalles del Empleado</h1>
+    </div>
+    <div class="card-body empleado-card-body">
+        @if (empleado != null)
+        {
+            <p>No se encontraron detalles para este empleado.</p>
+        }
+        else
+        {
+            <div class="empleado-details">
+                <h2>Empleado ID: @empleado.EmpleadoId</h2>
+                <p><strong>Nombre:</strong> @empleado.Nombre</p>
+                <p><strong>Teléfono:</strong> @empleado.Telefono</p>
+                <p><strong>Dirección:</strong> @empleado.Direccion</p>
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <a href="/IndexEmpleados" class="btn btn-secondary bi bi-arrow-left-square-fill ms-auto">Volver</a>
+    </div>
+</div>
+
+<style>
+    .empleado-card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        border-radius: 5px;
+    }
+
+    .empleado-card-header {
+        padding: 2px 16px;
+        background-color: #5D5C61;
+        color: #fff;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    .empleado-card-body {
+        padding: 15px 16px;
+        background-color: #f9f9f9;
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .empleado-details {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1);
+    }
+</style>
+
+@code {
+    [Parameter]
+    public int EmpleadoId { get; set; }
+
+    private Empleados empleado;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // empleado = await empleadosService.Buscar(EmpleadoId) ?? new Empleado();
+    }
+}
