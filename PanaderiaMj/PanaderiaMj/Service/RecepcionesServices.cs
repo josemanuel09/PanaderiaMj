@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PanaderiaMj.DAL;
+using PanaderiaMj.Data;
 using PanaderiaMj.Models;
 using System.Linq.Expressions;
 
@@ -7,9 +7,9 @@ namespace PanaderiaMj.Service
 {
     public class RecepcionesServices
     {
-        private readonly Contexto _contexto;
+        private readonly ApplicationDbContext _contexto;
 
-        public RecepcionesServices(Contexto contexto)
+        public RecepcionesServices(ApplicationDbContext contexto)
         {
             _contexto = contexto;
         }
