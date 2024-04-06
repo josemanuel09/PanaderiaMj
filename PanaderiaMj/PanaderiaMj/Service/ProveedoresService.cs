@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PanaderiaMj.DAL;
+using PanaderiaMj.Data;
 using PanaderiaMj.Models;
 using System.Linq.Expressions;
 
@@ -7,8 +7,8 @@ namespace PanaderiaMj.Service
 {
     public class ProveedoresService
     {
-        private readonly Contexto _contexto;
-        public ProveedoresService(Contexto contexto)
+        private readonly ApplicationDbContext _contexto;
+        public ProveedoresService(ApplicationDbContext contexto)
         {
             _contexto = contexto;
         }

@@ -29,7 +29,12 @@ namespace PanaderiaMj.Client
             Claim[] claims = [
                 new Claim(ClaimTypes.NameIdentifier, userInfo.UserId),
                 new Claim(ClaimTypes.Name, userInfo.Email),
-                new Claim(ClaimTypes.Email, userInfo.Email) ];
+                new Claim(ClaimTypes.Email, userInfo.Email),
+                new Claim(ClaimTypes.Role, userInfo.Role),
+                new Claim(ClaimTypes.GivenName, userInfo.Nombre),
+                new Claim(ClaimTypes.Surname, userInfo.Apellidos)
+                ];
+
 
             authenticationStateTask = Task.FromResult(
                 new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(claims,

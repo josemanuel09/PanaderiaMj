@@ -1,8 +1,39 @@
 ﻿@page "/Account/AccessDenied"
 
-<PageTitle>Access denied</PageTitle>
+<PageTitle>Acceso denegado</PageTitle>
 
-<header>
-    <h1 class="text-danger">Access denied</h1>
-    <p class="text-danger">You do not have access to this resource.</p>
-</header>
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-body text-center">
+                    <img src="/Images/AccesoDenegado.png" alt="Access Denied" class="img-fluid" style="max-width: 200px;">
+                    <h1 class="text-danger mt-3">¡Acceso Denegado!</h1>
+                    <p class="text-danger">Lo siento, no tienes permisos para acceder a esta página.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-body {
+        padding: 40px;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    p {
+        font-size: 1.2rem;
+    }
+
+</style>

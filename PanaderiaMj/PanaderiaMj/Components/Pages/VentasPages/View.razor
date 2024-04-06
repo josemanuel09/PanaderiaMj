@@ -9,30 +9,36 @@
 
 <PageTitle>Detalles de Ventas</PageTitle>
 
-@if (ventas != null)
-{
-    <div class="container">
-        <div class="card shadow-lg">
-            <div class="card-header">
-                <h3><strong>Detalles de Ventas</strong></h3>
-            </div>
-
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-8">
-                        <div class="col-md-11">
-                            <h3 class="text-center"><strong>Datos de la Venta</strong></h3>
-                            <div class="border-primary border border-2 border-primmary">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                                <li><strong>ventaId:</strong> @ventas.VentaId</li>
-                                                <li><strong>Cliente:</strong> @ventas.ClienteId</li>
-                                                <li><strong>Concepto:</strong> @ventas.Concepto</li>
-                                                <li><strong>Tipo de Venta:</strong> @ventas.TipoVenta</li>
-                                                <li><strong>Fecha:</strong> @ventas.FechaVenta</li>
-                                            </ul>
+<div class="container">
+    <div class="row">
+        <!-- Primera tabla -->
+        <div class="col">
+            <div class="card shadow-lg">
+                <div class="card-header">
+                    <h3><strong>View de Ventas</strong></h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="col-md-11">
+                                <h3 class="text-center"><strong>Datos de la Venta</strong></h3>
+                                <div class="border-primmary border border-2 border">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-2">
+                                                <div class="text-center">
+                                                    <img src="Images/ventas.png" alt="Imagen" class="img-fluid img-thumbnail" style="width: 100px; height: auto;">
+                                                </div>
+                                            </div>
+                                            <div class="col-9">
+                                                <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                                    <li><strong>VentaId: @ventas.VentaId</strong></li>
+                                                    <li><strong>Fecha de Venta: @ventas.FechaVenta</strong></li>
+                                                    <li><strong>Cliente: @ventas.ClienteId</strong></li>
+                                                    <li><strong>Concepto: @ventas.Concepto</strong></li>
+                                                    <li><strong>Tipo de venta: @ventas.TipoVenta</strong></li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -41,49 +47,43 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12">
-                <h3 class="text-center"><strong>Detalle de Insumos</strong></h3>
-                <div class="border-primary border border-2 border-primary">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
+        </div>
+
+        <!-- Segunda tabla -->
+        <div class="col">
+            <div class="card shadow-lg">
+                <div class="card-header">
+                    <h3><strong>Detalle de la venta</strong></h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in ventas.DetalleVentas)
+                                {
+                                    var producto = ProductosList.FirstOrDefault(i => i.ProductoId == detalle.ProductoId);
                                     <tr>
-                                        <th>Productos</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio</th>
-
+                                        <td>@(producto != null ? producto.Nombre : "No encontrado")</td>
+                                        <td>@detalle.Cantidad</td>
+                                        <td>@detalle.Precio</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var detalle in ventas.DetalleVentas)
-                                    {
-                                        var producto = ProductosList.FirstOrDefault(i => i.ProductoId == detalle.ProductoId);
-                                        <tr>
-                                            <td>@producto.Nombre</td>
-                                            <td>@detalle.Cantidad</td>
-                                            <td>@detalle.Precio</td>
-
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            @*Footer*@
-            <div class="card-footer">
-                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left" /> Volver</button>
-            </div>
         </div>
     </div>
+</div>
 
-}
-else
-{
-    <p>Compra no encontrada.</p>
-}
 @code {
     [Parameter]
     public int VentaId { get; set; }
