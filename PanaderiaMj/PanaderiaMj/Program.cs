@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using PanaderiaMj.Client.Pages;
 using PanaderiaMj.Components;
 using PanaderiaMj.Components.Account;
-using PanaderiaMj.DAL;
 using PanaderiaMj.Data;
 using PanaderiaMj.Service;
 using Radzen;
@@ -34,9 +33,9 @@ namespace PanaderiaMj
                 })
                 .AddIdentityCookies();
 
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            var connectionString = builder.Configuration.GetConnectionString("ConStr") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlite(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
             builder.Services.AddScoped<ClientesServices>();
             builder.Services.AddScoped<ProductosServices>();
@@ -49,13 +48,20 @@ namespace PanaderiaMj
             builder.Services.AddScoped<NotificationService>();
 
 
-            var ConStr = builder.Configuration.GetConnectionString("ConStr");
-            builder.Services.AddDbContext<Contexto>(op => op.UseSqlite(ConStr));
+            //var ConStr = builder.Configuration.GetConnectionString("ConStr");
+            //builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseSqlite(ConStr));
 
-            builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
+
+
+            //builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            //    .AddEntityFrameworkStores<ApplicationDbContext>()
+            //    .AddSignInManager()
+            //    .AddDefaultTokenProviders();
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
