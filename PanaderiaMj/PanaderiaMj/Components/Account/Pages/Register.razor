@@ -29,6 +29,21 @@
                         <hr />
 
                     </div>
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="Input.Nombre" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label for="email">Nombre</label>
+                        <ValidationMessage For="() => Input.Nombre" class="text-danger" />
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputText @bind-Value="Input.Apellido" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label for="email">Apellido</label>
+                        <ValidationMessage For="() => Input.Apellido" class="text-danger" />
+                    </div>
+                    <div class="form-floating mb-3">
+                        <InputDate @bind-Value="Input.FechaNacimiento" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <label for="email">Fecha de Nacimiento</label>
+                        <ValidationMessage For="() => Input.FechaNacimiento" class="text-danger" />
+                    </div>
                     <ValidationSummary class="text-danger" role="alert" />
                     <div class="form-floating mb-3">
                         <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
@@ -67,6 +82,9 @@
     public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
+        user.Nombre = Input.Nombre;
+        user.Apellido = Input.Apellido;
+        user.FechaNacimiento = Input.FechaNacimiento;
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
@@ -140,5 +158,9 @@
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; } = "";
+
+        public string? Nombre { get; set; } = string.Empty;
+        public string? Apellido { get; set; } = string.Empty;
+        public DateTime? FechaNacimiento { get; set; } 
     }
 }
