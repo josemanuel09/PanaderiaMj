@@ -4,6 +4,7 @@
 @inject ProveedoresService proveedoresService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>Detalles de Compras</PageTitle>
 

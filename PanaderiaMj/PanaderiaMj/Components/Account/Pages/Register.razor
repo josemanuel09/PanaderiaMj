@@ -90,6 +90,7 @@
         var emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
         var result = await UserManager.CreateAsync(user, Input.Password);
+        var resultRole = await UserManager.AddToRoleAsync(user, "User");
 
         if (!result.Succeeded)
         {

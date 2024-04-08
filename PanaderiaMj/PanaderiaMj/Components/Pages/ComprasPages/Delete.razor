@@ -6,6 +6,8 @@
 @inject ProveedoresService proveedoresService
 @inject IJSRuntime IJSRuntime
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <RadzenNotification />
 <PageTitle>Eliminar Compra</PageTitle>

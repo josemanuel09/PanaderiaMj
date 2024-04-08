@@ -4,8 +4,11 @@
 @inject InsumosService insumosService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <PageTitle>Detalles de Producto</PageTitle>
+
 
 @if (producto != null)
 {

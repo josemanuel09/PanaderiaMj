@@ -5,6 +5,8 @@
 @inject NotificationService NotificationService
 @inject IJSRuntime IJSRuntime
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <RadzenNotification />
 <PageTitle>Detalles de Recepciones</PageTitle>

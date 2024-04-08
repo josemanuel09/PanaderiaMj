@@ -5,6 +5,8 @@
 @inject ClientesServices clientesService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <PageTitle>Detalles de Ventas</PageTitle>
 

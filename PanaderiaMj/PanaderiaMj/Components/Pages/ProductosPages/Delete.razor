@@ -6,6 +6,8 @@
 @inject IJSRuntime IJSRuntime
 @inject NotificationService NotificationService
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <RadzenNotification />
 <PageTitle>Eliminar Producto</PageTitle>

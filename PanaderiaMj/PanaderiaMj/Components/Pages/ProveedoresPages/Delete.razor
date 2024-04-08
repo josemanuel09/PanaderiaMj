@@ -5,6 +5,8 @@
 @inject IJSRuntime jsRuntime
 @inject NotificationService NotificationService
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <RadzenNotification />
 <PageTitle>Eliminar Proveedor</PageTitle>

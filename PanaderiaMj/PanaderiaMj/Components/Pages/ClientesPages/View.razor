@@ -4,6 +4,7 @@
 @inject NavigationManager navigationManager
 @inject IJSRuntime IJSRuntime
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>Detalles del Cliente</PageTitle>
 
