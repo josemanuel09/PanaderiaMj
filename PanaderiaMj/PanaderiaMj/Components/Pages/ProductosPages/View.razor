@@ -10,37 +10,34 @@
 @if (producto != null)
 {
     <div class="container">
-        <div class="row">
-            <div class="col">
-                <div class="card shadow-lg">
-                    <div class="card-header">
-                        <h3><strong>View de Productos</strong></h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="col-md-11">
-                                    <h3 class="text-center"><strong>Datos del Producto</strong></h3>
-                                    <div class="border-primary border-2 borde">
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-2">
-                                                    <div class="text-center">
-                                                        <img src="~/Images/agregarproducto.png" />
-                                                    </div>
-                                                    <div class="col-9">
-                                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                                            <li><strong>ProductoId: @producto.ProductoId</strong></li>
-                                                            <li><strong>Nombre: @producto.Nombre</strong></li>
-                                                            <li><strong>Descripcion: @producto.Descripcion</strong></li>
-                                                            <li><strong>Fecha Creacion: @producto.FechaCreacion</strong></li>
-                                                            <li><strong>Precio Producto: @producto.PrecioProducto</strong></li>
-                                                            <li><strong>Cantidad : @producto.CantidadAProducir</strong></li>
-                                                            <li><strong>Nota:  @producto.Nota</strong></li>
-                                                        </ul>
-
-                                                    </div>
-                                                </div>
+        <div class="card shadow-header">
+            <div class="card-header">
+                <h3 class="text-center"><strong>Detalles del Producto</strong></h3>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow-lg">
+                            <div class="card-header">
+                                <h3 class="text-center"><strong>Datos del Producto</strong></h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="border-primary border-2 borde">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 text-center">
+                                                <img src="/Images/agregarproducto.png" class="img-fluid" alt="Producto">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <ul class="list-unstyled">
+                                                    <li><strong>ProductoId:</strong> @producto.ProductoId</li>
+                                                    <li><strong>Nombre:</strong> @producto.Nombre</li>
+                                                    <li><strong>Descripcion:</strong> @producto.Descripcion</li>
+                                                    <li><strong>Fecha Creacion:</strong> @producto.FechaCreacion.ToShortDateString()</li>
+                                                    <li><strong>Precio Producto:</strong> @producto.PrecioProducto</li>
+                                                    <li><strong>Cantidad:</strong> @producto.CantidadAProducir</li>
+                                                    <li><strong>Nota:</strong> @producto.Nota</li>
+                                                </ul>
                                             </div>
                                         </div>
                                     </div>
@@ -48,44 +45,46 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card shadow-lg">
-                    <div class="card-header">
-                        <h3><strong>Detalle del producto</strong></h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Insumo</th>
-                                        <th>Cantidad</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var detalle in producto.ProductosDetalle)
-                                    {
-                                        var insumo = InsumosList.FirstOrDefault(i => i.InsumoId == detalle.InsumoId);
-                                        <tr>
-                                            <td>@(detalle != null ? producto.Nombre : "No encontrado")</td>
-                                            <td>@detalle.Cantidad</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+                    <div class="col-md-6">
+                        <div class="card shadow-lg">
+                            <div class="card-header">
+                                <h3 class="text-center"><strong>Detalle del producto</strong></h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Insumo</th>
+                                                <th>Cantidad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var detalle in producto.ProductosDetalle)
+                                            {
+                                                var insumo = InsumosList.FirstOrDefault(i => i.InsumoId == detalle.InsumoId);
+                                                <tr>
+                                                    <td>@(insumo != null ? insumo.Nombre : "No encontrado")</td>
+                                                    <td>@detalle.Cantidad</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            </div>
         </div>
     </div>
-
 }
 else
 {
-    <p>Compra no encontrada.</p>
+    <p>Producto no encontrado.</p>
 }
 @code {
     [Parameter]
@@ -101,6 +100,7 @@ else
             InsumosList = await insumosService.Listar(t => true);
         }
     }
+
     public void Volver()
     {
         navigationManager.NavigateTo("/IndexProductos");
