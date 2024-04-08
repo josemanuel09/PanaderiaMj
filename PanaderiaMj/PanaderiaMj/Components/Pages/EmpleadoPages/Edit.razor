@@ -27,10 +27,10 @@
         <div class="card-body">
             <div class="row">
                 @* <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="EmpleadoId">Empleado Id:</label>
-                        <input type="text" class="form-control" id="EmpleadoId" @bind="empleado.EmpleadoId" />
-                    </div>
+                <div class="form-group">
+                <label for="EmpleadoId">Empleado Id:</label>
+                <input type="text" class="form-control" id="EmpleadoId" @bind="empleado.EmpleadoId" />
+                </div>
                 </div> *@
                 <div class="col-md-6">
                     <div class="form-group">
@@ -55,15 +55,28 @@
                         <ValidationMessage For="@(() => empleado.Telefono)" />
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Fecha">Fecha de Ingreso:</label>
+                        <input type="text" class="form-control" id="Fecha" @bind="empleado.FechaIngreso" />
+                        <ValidationMessage For="@(() => empleado.FechaIngreso)" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Cedula">C&eacute;dula:</label>
+                        <input type="text" class="form-control" id="Cedula" @bind="empleado.Cedula" />
+                        <ValidationMessage For="@(() => empleado.Cedula)" />
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card-footer text-center fs-5" style="background-color: #5D5C61">
-            <!-- Botones -->
             <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Nuevo" type="button">
                 <span class="bi bi-plus-circle"></span> Nuevo
             </button>
             <button name="btnGuardar" id="btnGuardar" class="btn btn-success mr-2" type="button">
-                <span class="bi bi-download"@onclick="Guardar"></span> Guardar
+                <span class="bi bi-download" @onclick="Guardar"></span> Guardar
             </button>
             <button name="btnEliminar" id="btnEliminar" class="btn btn-secondary" @onclick="Atras" type="button">
                 <span class="bi bi-arrow-left-square-fill"></span> Volver Atrás
@@ -128,6 +141,7 @@
                 Duration = 5000
             };
         NotificationService.Notify(mensajeExito);
+        Nuevo();
     }
     public void Nuevo()
     {
