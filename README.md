@@ -52,7 +52,7 @@ https://youtu.be/SZ91Dut2d2c
 
 # Publicar el portal en somee o azure.
 
-http://panaderiamj.somee.com/
+https://panaderia.azurewebsites.net/
 
 # Imagenes:
 
