@@ -1,5 +1,9 @@
 ﻿@page "/IndexInsumos"
 @inject InsumosService insumosService
+@inject ProveedoresService proveedoresService
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+@rendermode InteractiveServer
 
 <div class="card" style="max-width: 1400px; margin: 40px auto;">
     <div class="card-header" style="background-color: #5D5C61;">
@@ -45,6 +49,8 @@
                 <button type="button" @onclick="Buscar" class="btn btn-primary mt-4">
                     <i class="bi bi-search"></i> Buscar
                 </button>
+                <a href="/CreateInsumos" class="btn btn-success mt-4 bi bi-plus-square">  Crear</a>
+
             </div>
         </div>
 
@@ -52,28 +58,34 @@
             <thead>
                 <tr>
                     <th scope="col" style="width: 90px;">Insumo Id</th>
-                    <th scope="col" style="width: 160px;">Nombre</th>
-                    <th scope="col" style="width: 160px;">Cantidad Disponible</th>
-                    <th scope="col" style="width: 100px;">Editar</th>
-                    <th scope="col" style="width: 160px;">Ver </th>
-                    <th scope="col" style="width: 100px;">Eliminar</th>
+                    <th scope="col" style="width: 160px;">Nombre del Insumo</th>
+                    <th scope="col" style="width: 160px;">Cantidad Disponible del insumo</th>
+                    <th scope="col" style="width: 160px;">Proveedor del Insumo</th>
+                    <th scope="col" class="text-center" style="width: 160px;">Fecha de Registro</th>
+                    <th scope="col" class="text-center" style="width: 160px;">Ver </th>
+                    <th scope="col" class="text-center" style="width: 100px;">Editar</th>
+                    <th scope="col" class="text-center" style="width: 100px;">Eliminar</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var insumo in ListaInsumos)
                 {
+                    var proveedor = proveedoresList.FirstOrDefault(p => p.ProveedorId == insumo.ProveedorId);
                     <tr>
                         <td>@insumo.InsumoId</td>
                         <td>@insumo.Nombre</td>
+                        <td>@(proveedor != null ? proveedor.Nombre : "No encontrado")</td>
                         <td>@insumo.CantidadDisponible</td>
+                        <td>@insumo.FechaRegistro</td>
+                        
                         <td>
                             <div style="text-align: center;">
-                                <a href="/EditInsumos/@insumo.InsumoId" class="btn btn-outline-warning bi bi-pencil"></a>
+                                <a href="/ViewInsumos/@insumo.InsumoId" class="btn btn-outline-info bi bi-eye"></a>
                             </div>
                         </td>
                         <td>
                             <div style="text-align: center;">
-                                <a href="/ViewInsumos/@insumo.InsumoId" class="btn btn-outline-info bi bi-eye"></a>
+                                <a href="/EditInsumos/@insumo.InsumoId" class="btn btn-outline-warning bi bi-pencil"></a>
                             </div>
                         </td>
                         <td>
@@ -91,17 +103,20 @@
 @code {
     public List<Insumos> ListaInsumos { get; set; } = new List<Insumos>();
     public int Opcion { get; set; } = 0;
+    public List<Proveedores> proveedoresList { get; set; } = new List<Proveedores>();
     public int InsumoId { get; set; }
     public string Nombre { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await CargarInsumos();
+
     }
 
     public async Task CargarInsumos()
     {
         ListaInsumos = await insumosService.Listar(t => true);
+        proveedoresList = await proveedoresService.Listar(t => true);
     }
 
     public async Task Buscar()
