@@ -8,78 +8,102 @@
 @rendermode InteractiveServer
 
 <RadzenNotification />
-<PageTitle>Detalles de Compra</PageTitle>
-<div class="container">
-    <div class="card shadow-header">
-        <!-- Header -->
-        <div class="card-header">
-            <h3><strong>Eliminar Compra</strong></h3>
-        </div>
-        <div class="card-header">
-            <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar la compra?</h3>
-        </div>
-        <!-- Cuerpo -->
-        <div class="card-body">
-            <div class="row">
-                <div class="col-8">
-                    <div class="col-md-11">
-                        <h3 class="text-center"><strong>Datos de la Compra</strong></h3>
-                        <div class="border-primary border border-2 border-primmary">
+<PageTitle>Eliminar Compra</PageTitle>
+
+@if (compra != null)
+{
+    <div class="container">
+        <div class="card shadow-header">
+            <!-- Header -->
+            <div class="card-header">
+                <h3><strong>Eliminar Compra</strong></h3>
+            </div>
+            <div class="card-header">
+                <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar la compra?</h3>
+            </div>
+            <!-- Body -->
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow-lg">
+                            <div class="card-header">
+                                <h3 class="text-center"><strong>Datos de la Compra</strong></h3>
+                            </div>
                             <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                            <li><strong>CompraId:</strong> @compra.CompraId</li>
-                                            <li><strong>Proveedor:</strong> @proveedorNombre</li>
-                                            <li><strong>M&eacute;todo de Pago:</strong> @compra.MetodoDePago</li>
-                                            <li><strong>Fecha Pedida:</strong> @compra.FechaPedida</li>
-                                            <li><strong>Observaciones:</strong> @compra.Observaciones</li>
-                                            <li><strong>Monto Total:</strong> @compra.MontoTotal</li>
-                                        </ul>
+                                <div class="border-primary border-2 border-primmary">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 text-center">
+                                                <img src="Images/compras.png" class="img-fluid" alt="Compra">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <ul class="list-unstyled">
+                                                    <li><strong>CompraId:</strong> @compra.CompraId</li>
+                                                    <li><strong>Proveedor:</strong> @proveedorNombre</li>
+                                                    <li><strong>Método de Pago:</strong> @compra.MetodoDePago</li>
+                                                    <li><strong>Fecha Pedida:</strong> @compra.FechaPedida</li>
+                                                    <li><strong>Observaciones:</strong> @compra.Observaciones</li>
+                                                    <li><strong>Monto Total:</strong> @compra.MontoTotal</li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-12">
-                    <h3 class="text-center"><strong>Detalle de la Compra</strong></h3>
-                    <div class="border-primary border border-2 border-primary">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Insumo</th>
-                                            <th>Cantidad</th>
-                                            <th>Precio</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var detalle in compra.ComprasDetalle)
-                                        {
-                                            var insumo = InsumosList.FirstOrDefault(i => i.InsumoId == detalle.InsumoId);
+                    <div class="col-md-6">
+                        <div class="card shadow-lg">
+                            <div class="card-header">
+                                <h3 class="text-center"><strong>Detalle de la Compra</strong></h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
                                             <tr>
-                                                <td>@(insumo != null ? insumo.Nombre : "No encontrado")</td>
-                                                <td>@detalle.Cantidad</td>
-                                                <td>@detalle.Precio</td>
+                                                <th>Insumo</th>
+                                                <th>Cantidad</th>
+                                                <th>Precio</th>
+                                                <th>Monto</th>
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var detalle in compra.ComprasDetalle)
+                                            {
+                                                var insumo = InsumosList.FirstOrDefault(i => i.InsumoId == detalle.InsumoId);
+                                                <tr>
+                                                    <td>@(insumo != null ? insumo.Nombre : "No encontrado")</td>
+                                                    <td>@detalle.Cantidad</td>
+                                                    <td>@detalle.Precio</td>
+                                                    <td>@(detalle.Cantidad * detalle.Precio)</td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                                                <td>@compra.ComprasDetalle.Sum(d => d.Cantidad * d.Precio)</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                               
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Footer -->
-        <div class="card-footer">
-            <button type="button" class="btn btn-outline-danger" @onclick="EliminarCompra"><i class="bi bi-trash-fill"></i> Eliminar</button>
-            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            <!-- Footer -->
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-danger" @onclick="EliminarCompra"><i class="bi bi-trash-fill"></i> Eliminar</button>
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            </div>
         </div>
     </div>
-</div>
+}
+else
+{
+    <p>Compra no encontrada.</p>
+}
 
 @code {
     [Parameter]
@@ -87,7 +111,6 @@
     public Compras compra { get; set; } = new Compras();
     public string proveedorNombre { get; set; }
     public List<Insumos> InsumosList { get; set; } = new List<Insumos>();
-    public List<Proveedores> ProveedoresList { get; set; } = new List<Proveedores>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,7 +118,11 @@
         {
             compra = await comprasService.GetCompras(CompraId);
             InsumosList = await insumosService.Listar(t => true);
-            ProveedoresList = await proveedoresService.Listar(t => true);
+            var proveedor = await proveedoresService.Buscar(compra.ProveedorId);
+            if (proveedor != null)
+            {
+                proveedorNombre = proveedor.Nombre;
+            }
         }
     }
 
