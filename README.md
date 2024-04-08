@@ -17,7 +17,13 @@ Jose Manuel Polanco Mejia
 Panaderia Mj: Sistema de Venta Panadería
 
 # USUARIO Y CONTRASEÑA:
-panaderiaMj@gmail.com
+# Usuario:
+juan@gmail.com
+Admin_123
+
+# Administardor:
+maria@gmail.com
+Maria_123
 
 Panaderia_123
 
@@ -34,6 +40,8 @@ Registrar Ventas: Este Permite Poder registar una venta y a la vez actualizar lo
 
 
 Registar Producto: Este Permite poder crear un nuevo producto utilizando los insumos ya agregados en el inventario de compras. Lo que causara una disminucion en el inventario de compras. 
+
+Dicho programa contiene Roles de Usuario, tanto como administrado y Usuario Corriente.
 
 En resumen, el sistema de ventas de la panadería es una herramienta completa que permite llevar un control detallado de las operaciones diarias. Con sus distintos módulos, es posible gestionar el inventario, controlar las compras y ventas, así como también conocer la información relevante de los clientes.
 
