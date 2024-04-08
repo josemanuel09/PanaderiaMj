@@ -19,9 +19,10 @@ namespace PanaderiaMj.Service
         }
         public async Task<Ventas?> GetVentas(int id)
         {
-            return await _contexto.Ventas.Include(c => c.DetalleVentas).FirstOrDefaultAsync(c => c.VentaId == id);
+            return await _contexto.Ventas.Include(c => c.DetalleVentas)
+                .FirstOrDefaultAsync(c => c.VentaId == id);
         }
-
+       
         public async Task<bool> Insertar(Ventas ventas)
         {
             _contexto.Ventas.Add(ventas);
@@ -45,7 +46,7 @@ namespace PanaderiaMj.Service
 
         public async Task<bool> Eliminar(Ventas ventas)
         {
-            var c = await _contexto.Clientes.FindAsync(ventas.VentaId);
+            var c = await _contexto.Ventas.FindAsync(ventas.VentaId);
             _contexto.Entry(c!).State = EntityState.Detached;
             _contexto.Entry(ventas).State = EntityState.Deleted;
             return await _contexto.SaveChangesAsync() > 0;
@@ -54,6 +55,7 @@ namespace PanaderiaMj.Service
         public async Task<Ventas?> Buscar(int VentaId)
         {
             return await _contexto.Ventas
+                .Include(c => c.DetalleVentas)
                 .Where(c => c.VentaId == VentaId)
                 .AsNoTracking()
                 .SingleOrDefaultAsync();
@@ -62,6 +64,7 @@ namespace PanaderiaMj.Service
         public async Task<List<Ventas>> Listar(Expression<Func<Ventas, bool>> Criterio)
         {
             return await _contexto.Ventas
+                    .Include(c => c.DetalleVentas)
                     .Where(Criterio)
                     .AsNoTracking()
                     .ToListAsync();
