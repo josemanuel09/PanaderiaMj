@@ -70,6 +70,7 @@
                             <div class="col-3">
                                 <label class="form-label">Insumo</label>
                                 <InputSelect class="form-select" @bind-Value="productosDetalle.InsumoId">
+                                    <option value="0">Seleccione un insumo</option>
                                     @foreach (var insumo in InsumosList)
                                     {
                                         <option value="@insumo.InsumoId">@insumo.Nombre</option>
