@@ -2,29 +2,47 @@
 @page "/ViewInsumos/{InsumoId:int}"
 @inject InsumosService insumosService
 @inject NavigationManager navigationManager
+@inject ProveedoresService proveedoresService
+
 @inject IJSRuntime jsRuntime
 @rendermode InteractiveServer
 
 <PageTitle>Detalles de Insumo</PageTitle>
-<div class="container">
-    <div class="card shadow-lg">
-        <div class="card-header">
-            <h3><strong>Detalles de Insumo</strong></h3>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-8">
-                    <div class="col-md-11">
-                        <h3 class="text-center"><strong>Datos del Insumo</strong></h3>
-                        <div class="border-primmary border border-2 borde">
+@if (insumo != null)
+{
+    <div class="container">
+        <div class="card shadow-lg">
+            <!-- Header -->
+            <div class="card-header">
+                <h3 class="text-center"><strong>Detalles del Insumo</strong></h3>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow-lg">
+                            <div class="card-header">
+                                <h3 class="text-center"><strong>Datos del Insumo</strong></h3>
+                            </div>
                             <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                            <li><strong>InsumoId: @insumo.InsumoId</strong></li>
-                                            <li><strong>Nombre: @insumo.Nombre</strong></li>
-                                            <li><strong>Cantidad: @insumo.CantidadDisponible</strong></li>
-                                        </ul>
+                                <div class="border-primmary border border-2 borde">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <!-- Columna para la imagen -->
+                                            <div class="col-md-4 text-center">
+                                                <img src="Images/ventas.png" alt="Imagen" class="img-fluid img-thumbnail" style="width: 100px; height: auto;">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                                    
+                                                    <li><strong>InsumoId:</strong> @insumo.InsumoId</li>
+                                                    <li><strong>Nombre:</strong> @insumo.Nombre</li>
+                                                    <li><strong>Cantidad:</strong> @insumo.CantidadDisponible</li>
+                                                    <li><strong>Proveedor del Insumo:</strong> @(proveedores != null ? proveedores.Nombre : "No encontrado")</li>
+                                                    <li><strong>Fecha de Registro</strong> @insumo.FechaRegistro</li>
+
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -32,18 +50,24 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Footer -->
-        <div class="card-footer">
-            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            <!-- Footer -->
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            </div>
         </div>
     </div>
-</div>
+}
+else
+{
+    <p>Insumo no encontrado.</p>
+}
 
 @code {
     [Parameter]
     public int InsumoId { get; set; }
     public Insumos insumo { get; set; } = new Insumos();
+    public List<Proveedores> ProveedoresList { get; set; } = new List<Proveedores>();
+    public Proveedores proveedores { get; set; } 
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,6 +76,8 @@
             insumo.InsumoId = InsumoId;
             await Buscar();
         }
+        ProveedoresList = await proveedoresService.Listar(t => true);
+        proveedores = ProveedoresList.FirstOrDefault(p => p.ProveedorId == insumo.ProveedorId); 
     }
 
     public async Task Buscar()
@@ -69,3 +95,4 @@
         navigationManager.NavigateTo("/IndexInsumos");
     }
 }
+
