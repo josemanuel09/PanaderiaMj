@@ -190,25 +190,7 @@
         }
         InsumosList = await insumosService.Listar(t => true);
 
-        foreach (var InsumoAgregado in InsumosAgregados)
-        {
-            var insumo = InsumosList.FirstOrDefault(I => I.InsumoId == InsumoAgregado.InsumoId);
-            if (insumo != null)
-            {
-                insumo.CantidadDisponible -= InsumoAgregado.Cantidad;
-                await insumosService.Guardar(insumo);
-            }
-        }
-
-        foreach (var InsumoEliminado in InsumosEliminados)
-        {
-            var insumo = InsumosList.FirstOrDefault(I => I.InsumoId == InsumoEliminado.InsumoId);
-            if (insumo != null)
-            {
-                insumo.CantidadDisponible += InsumoEliminado.Cantidad;
-                await insumosService.Guardar(insumo);
-            }
-        }
+       
         InsumosAgregados = new List<ComprasDetalle>();
         InsumosEliminados = new List<ComprasDetalle>();
 
