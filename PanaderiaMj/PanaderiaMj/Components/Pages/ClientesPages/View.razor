@@ -5,82 +5,89 @@
 @inject IJSRuntime IJSRuntime
 @rendermode InteractiveServer
 
-<PageTitle>Detalles de Proveedor</PageTitle>
-<div class="container">
-	<div class="card shadow-lg">
-		@*Header*@
-		<div class="card-header">
-			<h3><strong>Detalles de Proveedor</strong></h3>
-		</div>
-		@*Cuerpo*@
-		<div class="card-body">
-			<div class="row">
-				<div class="col-8">
-					<div class="col-md-11">
-						<h3 class="text-center"><strong>Datos del Proveedor</strong></h3>
-						<div class="border-primmary border border-2 borde">
-							<div class="card-body">
-								<div class="row">
-									<!-- Columna para la imagen -->
-									<div class="col-2">
-										<div class="text-center">
-											<img src="Images/clientes.png" alt="Imagen" class="img-fluid img-thumbnail" style="width: 100px; height: auto;">
-										</div>
-									</div>
-									<div class="col-9">
-										<ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-											<li><strong>ClienteId: @cliente.ClienteId</strong></li>
-											<li><strong>Nombre: @cliente.Nombre</strong></li>
-											<li><strong>Apellido: @cliente.Apellido</strong> </li>
-											<li><strong>Telefono: @cliente.Telefono</strong></li>
-											<li><strong>Email: @cliente.Email\</strong></li>
-											<li><strong>Cedula: @cliente.Cedula</strong> </li>
-											<li><strong>Fecha: @cliente.FechaCreacion</strong> </li>
-											<li><strong>Direccion: @cliente.Direccion</strong> </li>
+<PageTitle>Detalles del Cliente</PageTitle>
 
-										</ul>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</div>
-		@*Footer*@
-		<div class="card-footer">
-			<button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left" /> Volver</button>
-		</div>
-	</div>
-</div>
-
+@if (cliente != null)
+{
+    <div class="container">
+        <div class="card shadow-header">
+            <!-- Header -->
+            <div class="card-header">
+                <h3 class="text-center"><strong>Detalles del Cliente</strong></h3>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow-lg">
+                            <div class="card-header">
+                                <h3 class="text-center"><strong>Datos del Cliente</strong></h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="border-primary border-2 borde">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <!-- Columna para la imagen -->
+                                            <div class="col-md-4 text-center">
+                                                <img src="Images/clientes.png" alt="Imagen" class="img-fluid img-thumbnail" style="width: 100px; height: auto;">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                                    <li><strong>ClienteId:</strong> @cliente.ClienteId</li>
+                                                    <li><strong>Nombre:</strong> @cliente.Nombre</li>
+                                                    <li><strong>Apellido:</strong> @cliente.Apellido</li>
+                                                    <li><strong>Tel&eacute;fono:</strong> @cliente.Telefono</li>
+                                                    <li><strong>Email:</strong> @cliente.Email</li>
+                                                    <li><strong>C&eacute;dula:</strong> @cliente.Cedula</li>
+                                                    <li><strong>Fecha de Ingreso:</strong> @cliente.FechaCreacion.ToShortDateString()</li>
+                                                    <li><strong>Direcci&oacute;n:</strong> @cliente.Direccion</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Footer -->
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Cliente no encontrado.</p>
+}
 
 @code {
-	[Parameter]
-	public int ClienteId { get; set; }
-	public Clientes cliente { get; set; } = new Clientes();
+    [Parameter]
+    public int ClienteId { get; set; }
+    public Clientes cliente { get; set; } = new Clientes();
 
-	protected override async Task OnInitializedAsync()
-	{
-		if (ClienteId > 0)
-		{
-			cliente.ClienteId = ClienteId;
-			await this.Buscar();
-		}
-	}
-	public async Task Buscar()
-	{
-		var clienteEncontrado = await clienteservice.Buscar(cliente.ClienteId);
+    protected override async Task OnInitializedAsync()
+    {
+        if (ClienteId > 0)
+        {
+            cliente.ClienteId = ClienteId;
+            await Buscar();
+        }
+    }
 
-		if (clienteEncontrado != null)
-		{
-			this.cliente = clienteEncontrado;
-		}
-	}
-	public void Volver()
-	{
-		navigationManager.NavigateTo("/IndexClientes");
-	}
+    public async Task Buscar()
+    {
+        var clienteEncontrado = await clienteservice.Buscar(cliente.ClienteId);
 
+        if (clienteEncontrado != null)
+        {
+            cliente = clienteEncontrado;
+        }
+    }
+
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/IndexClientes");
+    }
 }
