@@ -53,7 +53,7 @@
                 </div>
                 <div class="col-6">
                     <label class="form-label">Precio Producto</label>
-                    <InputNumber class="form-control" @bind-Value="producto.PrecioProducto" />\
+                    <InputNumber class="form-control" @bind-Value="producto.PrecioProducto" />
                     <ValidationMessage For="@(() => producto.PrecioProducto)" />
                 </div>
             </div>
@@ -271,7 +271,7 @@
     }
     public void Atras()
     {
-        navigationManager.NavigateTo("/MenuProductos");
+        navigationManager.NavigateTo("/IndexProductos");
     }
 
 }
