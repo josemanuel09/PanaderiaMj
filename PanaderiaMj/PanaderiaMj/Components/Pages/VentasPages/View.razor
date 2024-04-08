@@ -3,42 +3,40 @@
 @inject ProductosServices productosService
 @inject VentasService ventasService
 @inject ClientesServices clientesService
-
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
 <PageTitle>Detalles de Ventas</PageTitle>
 
-<div class="container">
-    <div class="row">
-        <!-- Primera tabla -->
-        <div class="col">
-            <div class="card shadow-lg">
-                <div class="card-header">
-                    <h3><strong>View de Ventas</strong></h3>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="col-md-11">
-                                <h3 class="text-center"><strong>Datos de la Venta</strong></h3>
-                                <div class="border-primmary border border-2 border">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-2">
-                                                <div class="text-center">
-                                                    <img src="Images/ventas.png" alt="Imagen" class="img-fluid img-thumbnail" style="width: 100px; height: auto;">
-                                                </div>
-                                            </div>
-                                            <div class="col-9">
-                                                <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                                    <li><strong>VentaId: @ventas.VentaId</strong></li>
-                                                    <li><strong>Fecha de Venta: @ventas.FechaVenta</strong></li>
-                                                    <li><strong>Cliente: @ventas.ClienteId</strong></li>
-                                                    <li><strong>Concepto: @ventas.Concepto</strong></li>
-                                                    <li><strong>Tipo de venta: @ventas.TipoVenta</strong></li>
-                                                </ul>
-                                            </div>
+@if (ventas != null)
+{
+    <div class="container">
+    <div class="card shadow-header">
+        <div class="card-header">
+            <h3 class="text-center"><strong>Detalles de la Venta</strong></h3>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card shadow-lg">
+                        <div class="card-header">
+                            <h3 class="text-center"><strong>Datos de la venta</strong></h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="border-primary border-2 borde">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">
+                                            <img src="Images/ventas.png" class="img-fluid" alt="Venta">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <ul class="list-unstyled">
+                                                <li><strong>VentaId:</strong> @ventas.VentaId</li>
+                                                <li><strong>Fecha de Venta:</strong> @ventas.FechaVenta.ToShortDateString()</li>
+                                                <li><strong>Cliente:</strong> @ventas.ClienteId</li>
+                                                <li><strong>Concepto:</strong> @ventas.Concepto</li>
+                                                <li><strong>Tipo de venta:</strong> @ventas.TipoVenta</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -46,43 +44,63 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+                <div class="col-md-6">
+                    <div class="card shadow-lg">
+                        <div class="card-header">
+                            <h3 class="text-center"><strong>Detalle de la venta</strong></h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var detalle in ventas.DetalleVentas)
+                                        {
+                                            var producto = ProductosList.FirstOrDefault(i => i.ProductoId == detalle.ProductoId);
+                                            <tr>
+                                                <td>@(producto != null ? producto.Nombre : "No encontrado")</td>
+                                                <td>@detalle.Cantidad</td>
+                                                <td>@detalle.Precio</td>
+                                                <td>@(detalle.Cantidad * detalle.Precio)</td>
 
-        <!-- Segunda tabla -->
-        <div class="col">
-            <div class="card shadow-lg">
-                <div class="card-header">
-                    <h3><strong>Detalle de la venta</strong></h3>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Cantidad</th>
-                                    <th>Precio</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var detalle in ventas.DetalleVentas)
-                                {
-                                    var producto = ProductosList.FirstOrDefault(i => i.ProductoId == detalle.ProductoId);
-                                    <tr>
-                                        <td>@(producto != null ? producto.Nombre : "No encontrado")</td>
-                                        <td>@detalle.Cantidad</td>
-                                        <td>@detalle.Precio</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+                                            </tr>
+
+
+                                        }
+                                        <tr>
+                                            <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                                            <td>@ventas.DetalleVentas.Sum(d => d.Cantidad * d.Precio)</td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            </div>
+        
     </div>
-</div>
+        
+ </div>
+    
+}
+else
+{
+    <p>Venta no encontrada.</p>
+}
 
 @code {
     [Parameter]
@@ -101,6 +119,7 @@
             ventas.FechaVenta = DateTime.Now;
         }
     }
+
     public void Volver()
     {
         navigationManager.NavigateTo("/IndexVentas");
