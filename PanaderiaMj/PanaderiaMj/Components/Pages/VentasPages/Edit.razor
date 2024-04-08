@@ -89,6 +89,7 @@
                             <div class="col-4">
                                 <label for="txtProducto" class="form-label"> Producto:</label>
                                 <InputSelect class="form-select" @bind-Value="ventasDetalle.ProductoId">
+                                    <option value="0">Seleccione un producto</option>
                                     @foreach (var producto in ProductosList)
                                     {
                                         <option value="@producto.ProductoId">@producto.Nombre (@producto.CantidadAProducir)</option>
@@ -185,6 +186,7 @@
         ProductosList = await productosServices.Listar(c => true);
         ClientesList = await clientesService.Listar(c => true);
         ventas.FechaVenta = DateTime.Now;
+        ventas = await ventasService.GetVentas(VentaId);
     }
     public async Task Guardar()
     {
