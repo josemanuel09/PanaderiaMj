@@ -1,49 +1,52 @@
 ﻿@page "/DeleteClientes"
 @page "/DeleteClientes/{ClienteId:int}"
-@inject ClientesServices clienteservice
+@inject ClientesServices clientesService
 @inject NavigationManager navigationManager
-@inject IJSRuntime IJSRuntime
-@inject NotificationService NotificationService
+@inject IJSRuntime ijsRuntime
+@inject NotificationService notificationService
 @rendermode InteractiveServer
 
-<RadzenNotification />
-<PageTitle>Detalles de Cliente</PageTitle>
-<div class="container">
-    <div class="card shadow-header">
-        <!-- Header -->
-        <div class="card-header">
-            <h3><strong>Eliminar de Cliente</strong></h3>
-        </div>
-        <div class="card-header">
-            <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar el cliente?</h3>
-        </div>
-        <!-- Cuerpo -->
-        <div class="card-body">
-            <div class="row">
-                <div class="col-8">
-                    <div class="col-md-11">
-                        <h3 class="text-center"><strong>Datos del Cliente</strong></h3>
-                        <div class="border-primmary border border-2 borde">
+<PageTitle>Eliminar Cliente</PageTitle>
+
+@if (cliente != null)
+{
+    <div class="container">
+        <div class="card shadow-header">
+            <!-- Header -->
+            <div class="card-header">
+                <h3><strong>Eliminar Cliente</strong></h3>
+            </div>
+            <div class="card-header">
+                <h3 class="text-danger">¿Estás seguro de que quieres eliminar el cliente?</h3>
+            </div>
+            <!-- Body -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow-lg">
+                            <div class="card-header">
+                                <h3 class="text-center"><strong>Datos del cliente</strong></h3>
+                            </div>
                             <div class="card-body">
-                                <div class="row">
-                                    <!-- Columna para la imagen -->
-                                    <div class="col-2">
-                                        <div class="text-center">
-                                            <img src="Images/ventas.png" alt="Imagen" class="img-fluid img-thumbnail" style="width: 100px; height: auto;">
+                                <div class="border-primary border-2 borde">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 text-center">
+                                                <img src="Images/clientes.png" class="img-fluid" alt="Cliente">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <ul class="list-unstyled">
+                                                    <li><strong>ClienteId:</strong> @cliente.ClienteId</li>
+                                                    <li><strong>Nombre:</strong> @cliente.Nombre</li>
+                                                    <li><strong>Apellido:</strong> @cliente.Apellido</li>
+                                                    <li><strong>Tel&eacute;fono:</strong> @cliente.Telefono</li>
+                                                    <li><strong>Email:</strong> @cliente.Email</li>
+                                                    <li><strong>C&eacute;dula:</strong> @cliente.Cedula</li>
+                                                    <li><strong>Fecha:</strong> @cliente.FechaCreacion.ToShortDateString()</li>
+                                                    <li><strong>Direcci&oacute;n:</strong> @cliente.Direccion</li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <!-- Columna para los datos del cliente -->
-                                    <div class="col-9">
-                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                            <li><strong>ClienteId: @cliente.ClienteId</strong></li>
-                                            <li><strong>Nombre: @cliente.Nombre</strong></li>
-                                            <li><strong>Apellido: @cliente.Apellido</strong> </li>
-                                            <li><strong>Tel&eacute;fono: @cliente.Telefono</strong></li>
-                                            <li><strong>Email: @cliente.Email\</strong></li>
-                                            <li><strong>C&eacute;dula: @cliente.Cedula</strong> </li>
-                                            <li><strong>Fecha: @cliente.FechaCreacion</strong> </li>
-                                            <li><strong>Direcci&oacute;n: @cliente.Direccion</strong> </li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -51,14 +54,18 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Footer -->
-        <div class="card-footer">
-            <button type="button" class="btn btn-outline-danger" @onclick="EliminarCliente"><i class="bi bi-trash-fill"></i> Eliminar</button>
-            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            <!-- Footer -->
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-danger" @onclick="EliminarCliente"><i class="bi bi-trash-fill"></i> Eliminar</button>
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            </div>
         </div>
     </div>
-</div>
+}
+else
+{
+    <p>Cliente no encontrado.</p>
+}
 
 @code {
     [Parameter]
@@ -69,61 +76,45 @@
     {
         if (ClienteId > 0)
         {
-            cliente.ClienteId = ClienteId;
-            await this.Buscar();
+            cliente = await clientesService.Buscar(ClienteId);
         }
     }
 
-    public async Task Buscar()
+    private async Task EliminarCliente()
     {
-        var clienteEncontrado = await clienteservice.Buscar(cliente.ClienteId);
-
-        if (clienteEncontrado != null)
+        if (ClienteId == 0)
         {
-            this.cliente = clienteEncontrado;
-        }
-    }
-
-    public async Task EliminarCliente()
-    {
-        if (!await clienteservice.Existe(cliente.ClienteId))
-        {
-            var mensaje = new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "Error",
-                    Detail = "El cliente no existe.",
-                    Duration = 5000
-                };
-            NotificationService.Notify(mensaje);
             return;
         }
 
-        if (await clienteservice.Eliminar(this.cliente))
-        {
-            var mensaje = new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Success,
-                    Summary = "Éxito",
-                    Detail = "Cliente eliminado exitosamente.",
-                    Duration = 5000
-                };
-            NotificationService.Notify(mensaje);
-        }
-        else
-        {
-            var mensaje = new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "Error",
-                    Detail = "Error al eliminar el cliente.",
-                    Duration = 5000
-                };
-            NotificationService.Notify(mensaje);
-        }
+       
+            if (await clientesService.Eliminar(cliente))
+            {
+                var mensajeExito = new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Success,
+                        Summary = "Éxito",
+                        Detail = "Cliente eliminado exitosamente.",
+                        Duration = 5000
+                    };
+                notificationService.Notify(mensajeExito);
+                Volver();
+            }
+            else
+            {
+                var mensajeError = new NotificationMessage
+                    {
+                        Severity = NotificationSeverity.Error,
+                        Summary = "Error",
+                        Detail = "Error al eliminar el cliente.",
+                        Duration = 5000
+                    };
+                notificationService.Notify(mensajeError);
+            }
+        
     }
 
-    public void Volver()
+    private void Volver()
     {
         navigationManager.NavigateTo("/IndexClientes");
     }

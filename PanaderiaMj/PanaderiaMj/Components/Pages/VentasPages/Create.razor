@@ -131,11 +131,12 @@
                     <tbody>
                         @foreach (var detalleVenta in ventas.DetalleVentas)
                         {
+                            var producto = ProductosList.FirstOrDefault(i => i.ProductoId == detalleVenta.ProductoId);
                             <tr>
-                                <td>@detalleVenta.ProductoId</td>
+                                <td>@(producto != null ? producto.Nombre : "No Encontrado")</td>
                                 <td>@detalleVenta.Cantidad</td>
                                 <td>@detalleVenta.Precio</td>
-                                <td>@(detalleVenta.Cantidad * detalleVenta.Precio)</td>
+                                <td>@detalleVenta.Monto = @(detalleVenta.Cantidad *detalleVenta.Precio)</td>
                                 <td>
                                     <button name="Btn" id="Btn" class="btn btn-danger mr-2" type="button" @onclick="@(() => EliminarDetalle(detalleVenta))">
                                         <span class="bi bi-trash"></span>
@@ -280,6 +281,6 @@
     }
     public void Atras()
     {
-        navigationManager.NavigateTo("/MenuVentas");
+        navigationManager.NavigateTo("/IndexVentas");
     }
 }

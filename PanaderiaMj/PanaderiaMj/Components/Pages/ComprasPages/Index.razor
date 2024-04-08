@@ -44,9 +44,11 @@
                 <input type="date" @bind="Hasta" class="form-control" />
             </div>
             <div class="col-3">
-                <button type="button" @onclick="Buscar" class="btn btn-primary mt-4">
+                <button type="button" @onclick="Buscar" class="btn btn-outline-primary mt-4">
                     <i class="bi bi-search"></i> Buscar
                 </button>
+                <a href="/CreateCompras" class="btn btn-outline-success mt-4 bi bi-plus-square">  Crear</a>
+
             </div>
         </div>
 
@@ -95,6 +97,14 @@
             </tbody>
         </table>
     </div>
+    <div class="card-footer fw-bold">
+        <p>Cantidad de Compras: @ListaCompras.Count</p>
+
+        <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+            <i class="bi bi-arrow-left"></i> Volver
+        </button>
+
+    </div>
 </div>
 
 @code {
@@ -132,9 +142,12 @@
             case 1:
                 ListaCompras = await comprasService.Listar(t => t.CompraId == CompraId && t.FechaPedida >= Desde && t.FechaPedida <= Hasta);
                 break;
-            // Agrega más casos para otros tipos de filtro si es necesario
             default:
                 break;
         }
+    }
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/");
     }
 }

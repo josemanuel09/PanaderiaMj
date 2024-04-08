@@ -1,6 +1,7 @@
 ﻿@page "/DeleteInsumos"
 @page "/DeleteInsumos/{InsumoId:int}"
 @inject InsumosService insumosService
+@inject ProveedoresService proveedoresService
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
 @inject NotificationService notificationService
@@ -8,30 +9,42 @@
 
 <RadzenNotification />
 <PageTitle>Eliminar Insumo</PageTitle>
-<div class="container">
-    <div class="card shadow-header">
-        <!-- Header -->
-        <div class="card-header">
-            <h3><strong>Eliminar Insumo</strong></h3>
-        </div>
-        <div class="card-header">
-            <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar el insumo?</h3>
-        </div>
-        <!-- Cuerpo -->
-        <div class="card-body">
-            <div class="row">
-                <div class="col-8">
-                    <div class="col-md-11">
-                        <h3 class="text-center"><strong>Datos del Insumo</strong></h3>
-                        <div class="border-primmary border border-2 borde">
+@if (insumo != null)
+{
+    <div class="container">
+        <div class="card shadow-header">
+            <!-- Header -->
+            <div class="card-header">
+                <h3><strong>Eliminar Insumo</strong></h3>
+            </div>
+            <div class="card-header">
+                <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar el insumo?</h3>
+            </div>
+            <!-- Body -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card shadow-lg">
+                            <div class="card-header">
+                                <h3 class="text-center"><strong>Datos del Insumo</strong></h3>
+                            </div>
                             <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                            <li><strong>InsumoId: @insumo.InsumoId</strong></li>
-                                            <li><strong>Nombre: @insumo.Nombre</strong></li>
-                                            <li><strong>Cantidad Disponible: @insumo.CantidadDisponible</strong></li>
-                                        </ul>
+                                <div class="border-primmary border border-2 borde">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 text-center">
+                                                <img src="Images/ventas.png" class="img-fluid" alt="Insumo">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <ul class="list-unstyled">
+                                                    <li><strong>InsumoId:</strong> @insumo.InsumoId</li>
+                                                    <li><strong>Nombre:</strong> @insumo.Nombre</li>
+                                                    <li><strong>Cantidad Disponible:</strong> @insumo.CantidadDisponible</li>
+                                                    <li><strong>Fecha de Registro: </strong>@insumo.FechaRegistro</li>
+                                                    <li><strong>Proveedor del Insumo:</strong> @(proveedores != null ? proveedores.Nombre : "No encontrado")</li>
+                                                </ul>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -39,37 +52,35 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Footer -->
-        <div class="card-footer">
-            <button type="button" class="btn btn-outline-danger" @onclick="EliminarInsumo"><i class="bi bi-trash-fill"></i> Eliminar</button>
-            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            <!-- Footer -->
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-danger" @onclick="EliminarInsumo"><i class="bi bi-trash-fill"></i> Eliminar</button>
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            </div>
         </div>
     </div>
-</div>
+}
+else
+{
+    <p>Insumo no encontrado.</p>
+}
 
 @code {
     [Parameter]
     public int InsumoId { get; set; }
     public Insumos insumo { get; set; } = new Insumos();
+    public List<Proveedores> ProveedoresList { get; set; } = new List<Proveedores>();
+    public Proveedores proveedores { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         if (InsumoId > 0)
         {
-            insumo.InsumoId = InsumoId;
-            await this.Buscar();
+            insumo = await insumosService.Buscar(InsumoId);
         }
-    }
+        ProveedoresList = await proveedoresService.Listar(t => true);
+        proveedores = ProveedoresList.FirstOrDefault(p => p.ProveedorId == insumo.ProveedorId);
 
-    public async Task Buscar()
-    {
-        var insumoEncontrado = await insumosService.Buscar(insumo.InsumoId);
-
-        if (insumoEncontrado != null)
-        {
-            insumo = insumoEncontrado;
-        }
     }
 
     public async Task EliminarInsumo()

@@ -18,5 +18,11 @@ namespace PanaderiaMj.Models
         public int Cantidad { get; set; }
         [Required(ErrorMessage = "La fecha es requerida")]
         public DateTime Fecha { get; set; }
+
+        [Required(ErrorMessage = "La Direccion es requerida")]
+        public string? Direccion { get; set; }
+
+        [Required(ErrorMessage = "El Telefono es requerido")]
+        public string? Telefono { get; set; }
     }
 }

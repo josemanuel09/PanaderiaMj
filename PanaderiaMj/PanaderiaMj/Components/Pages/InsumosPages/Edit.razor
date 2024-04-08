@@ -2,9 +2,11 @@
 @page "/EditInsumos/{InsumoId:int}"
 @inject NavigationManager Navigation
 @inject InsumosService insumoservice
+@inject ProveedoresService provedoresservice
 @inject NotificationService NotificationService
 @inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
+
 
 <RadzenNotification />
 <EditForm Model="insumo" OnValidSubmit="Guardar" FormName="InsumoForm">
@@ -19,16 +21,38 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Nombre:</label>
+                        <label>Nombre del Insumo:</label>
                         <InputText @bind-Value="insumo.Nombre" class="form-control" />
                         <ValidationMessage For="@(() => insumo.Nombre)" />
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Cantidad Disponible:</label>
+                        <label>Cantidad de Insumos Disponibles:</label>
                         <InputNumber @bind-Value="insumo.CantidadDisponible" class="form-control" />
                         <ValidationMessage For="@(() => insumo.CantidadDisponible)" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Proveedor del insumo:</label>
+                        <InputSelect @bind-Value="insumo.ProveedorId" class="form-select" style="width: 100%;">
+                            <option value="0">Seleccione un Proveedor</option>
+                            @foreach (var proveedor in proveedoresList)
+                            {
+                                <option value="@proveedor.ProveedorId">@proveedor.Nombre</option>
+
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => insumo.ProveedorId)" />
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Fecha de registro del insumo:</label>
+                        <InputDate @bind-Value="insumo.FechaRegistro" class="form-control" />
+                        <ValidationMessage For="@(() => insumo.FechaRegistro)" />
                     </div>
                 </div>
             </div>
@@ -46,6 +70,7 @@
     [Parameter]
     public int InsumoId { get; set; }
     public Insumos insumo { get; set; } = new Insumos();
+    public List<Proveedores> proveedoresList { get; set; } = new List<Proveedores>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -53,7 +78,11 @@
         {
             this.insumo.InsumoId = InsumoId;
             await this.Buscar();
+
         }
+        proveedoresList = await provedoresservice.Listar(t => true) ?? new List<Proveedores>();
+        insumo.FechaRegistro = DateTime.Now;
+
     }
 
     public async Task Buscar()
@@ -112,3 +141,4 @@
         Navigation.NavigateTo("/IndexInsumos");
     }
 }
+

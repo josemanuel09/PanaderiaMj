@@ -1,11 +1,15 @@
 ﻿@page "/IndexInsumos"
 @inject InsumosService insumosService
+@inject ProveedoresService proveedoresService
+@inject NavigationManager navigationManager
+@inject IJSRuntime jsRuntime
+@rendermode InteractiveServer
 
 <div class="card" style="max-width: 1400px; margin: 40px auto;">
     <div class="card-header" style="background-color: #5D5C61;">
         <div class="row align-items-center justify-content-center">
             <div class="col-3">
-                <img src="/Images/conultarInsumos.png" alt="insumos" style="max-width: 50%; height: auto;">
+                <img src="/Images/ventas.png" alt="insumos" style="max-width: 50%; height: auto;">
             </div>
             <div class="col-9">
                 <h1 style="text-align: center; color: #FFFFFF;"><strong>Consulta de Insumos</strong></h1>
@@ -19,7 +23,7 @@
                 <label>Filtrar Por</label>
                 <select @bind="Opcion" class="form-select">
                     <option value="0">Todo</option>
-                    <option value="1">InsumoId</option>
+                    <option value="1">Insumo Id</option>
                     <option value="2">Nombre</option>
                 </select>
             </div>
@@ -31,8 +35,7 @@
                         <input type="number" @bind="InsumoId" class="form-control" />
                     </div>
                 </div>
-            }
-            else if (Opcion == 2)
+            }else if(Opcion == 2)
             {
                 <div class="col-3">
                     <label>Nombre</label>
@@ -42,9 +45,18 @@
                 </div>
             }
             <div class="col-3">
-                <button type="button" @onclick="Buscar" class="btn btn-primary mt-4">
+                <label>Desde:</label>
+                <input type="date" @bind="Desde" class="form-control" />
+            </div>
+            <div class="col-3">
+                <label>Hasta:</label>
+                <input type="date" @bind="Hasta" class="form-control" />
+            </div>
+            <div class="col-3">
+                <button type="button" @onclick="Buscar" class="btn btn-outline-primary mt-4">
                     <i class="bi bi-search"></i> Buscar
                 </button>
+                <a href="/CreateInsumos" class="btn btn-outline-success mt-4 bi bi-plus-square">  Crear</a>
             </div>
         </div>
 
@@ -52,28 +64,33 @@
             <thead>
                 <tr>
                     <th scope="col" style="width: 90px;">Insumo Id</th>
-                    <th scope="col" style="width: 160px;">Nombre</th>
-                    <th scope="col" style="width: 160px;">Cantidad Disponible</th>
-                    <th scope="col" style="width: 100px;">Editar</th>
-                    <th scope="col" style="width: 160px;">Ver </th>
-                    <th scope="col" style="width: 100px;">Eliminar</th>
+                    <th scope="col" style="width: 160px;">Nombre del Insumo</th>
+                    <th scope="col" style="width: 160px;">Cantidad Disponible del insumo</th>
+                    <th scope="col" style="width: 160px;">Proveedor del Insumo</th>
+                    <th scope="col" class="text-center" style="width: 160px;">Fecha de Registro</th>
+                    <th scope="col" class="text-center" style="width: 160px;">Ver </th>
+                    <th scope="col" class="text-center" style="width: 100px;">Editar</th>
+                    <th scope="col" class="text-center" style="width: 100px;">Eliminar</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var insumo in ListaInsumos)
                 {
+                    var proveedor = proveedoresList.FirstOrDefault(p => p.ProveedorId == insumo.ProveedorId);
                     <tr>
                         <td>@insumo.InsumoId</td>
                         <td>@insumo.Nombre</td>
                         <td>@insumo.CantidadDisponible</td>
+                        <td>@(proveedor != null ? proveedor.Nombre : "No encontrado")</td>
+                        <td>@insumo.FechaRegistro</td>
                         <td>
                             <div style="text-align: center;">
-                                <a href="/EditInsumos/@insumo.InsumoId" class="btn btn-outline-warning bi bi-pencil"></a>
+                                <a href="/ViewInsumos/@insumo.InsumoId" class="btn btn-outline-info bi bi-eye"></a>
                             </div>
                         </td>
                         <td>
                             <div style="text-align: center;">
-                                <a href="/ViewInsumos/@insumo.InsumoId" class="btn btn-outline-info bi bi-eye"></a>
+                                <a href="/EditInsumos/@insumo.InsumoId" class="btn btn-outline-warning bi bi-pencil"></a>
                             </div>
                         </td>
                         <td>
@@ -86,13 +103,24 @@
             </tbody>
         </table>
     </div>
+    <div class="card-footer fw-bold">
+        <p>Cantidad de Insumos: @ListaInsumos.Count</p>
+
+        <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+            <i class="bi bi-arrow-left"></i> Volver
+        </button>
+
+    </div>
 </div>
 
 @code {
     public List<Insumos> ListaInsumos { get; set; } = new List<Insumos>();
     public int Opcion { get; set; } = 0;
+    public List<Proveedores> proveedoresList { get; set; } = new List<Proveedores>();
     public int InsumoId { get; set; }
     public string Nombre { get; set; }
+    public DateTime Desde { get; set; } = DateTime.Today.AddDays(-7); // Valor predeterminado: hace una semana
+    public DateTime Hasta { get; set; } = DateTime.Today;
 
     protected override async Task OnInitializedAsync()
     {
@@ -102,6 +130,7 @@
     public async Task CargarInsumos()
     {
         ListaInsumos = await insumosService.Listar(t => true);
+        proveedoresList = await proveedoresService.Listar(t => true);
     }
 
     public async Task Buscar()
@@ -109,16 +138,21 @@
         switch (Opcion)
         {
             case 0:
-                ListaInsumos = await insumosService.Listar(t => true);
+                ListaInsumos = await insumosService.Listar(t => t.FechaRegistro >= Desde && t.FechaRegistro <= Hasta);
                 break;
             case 1:
-                ListaInsumos = await insumosService.Listar(t => t.InsumoId == InsumoId);
+                ListaInsumos = await insumosService.Listar(t => t.InsumoId == InsumoId && t.FechaRegistro >=Desde && t.FechaRegistro <= Hasta);
                 break;
             case 2:
-                ListaInsumos = await insumosService.Listar(t => t.Nombre.ToLower().Contains(Nombre.ToLower()));
+                ListaInsumos = await insumosService.Listar(t => t.Nombre.ToLower().Contains(Nombre.ToLower()) && t.FechaRegistro >= Desde && t.FechaRegistro <= Hasta);
                 break;
+            
             default:
                 break;
         }
+    }
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/");
     }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/IndexClientes"
 @rendermode InteractiveServer
 @inject ClientesServices clienteservice
+@inject NavigationManager NavigationManager
 
 <div class="card" style="max-width: 1400px; margin: 40px auto;">
     <div class="card-header" style="background-color: #5D5C61;">
@@ -51,9 +52,11 @@
                 <input type="date" @bind="Hasta" class="form-control" />
             </div>
             <div class="col-3">
-                <button type="button" @onclick="Buscar" class="btn btn-primary mt-4">
+                <button type="button" @onclick="Buscar" class="btn btn-outline-primary mt-4">
                     <i class="bi bi-search"></i> Buscar
                 </button>
+                <a href="/CreateClientes" class="btn btn-outline-success mt-4 bi bi-plus-square">  Crear</a>
+
             </div>
         </div>
 
@@ -105,6 +108,14 @@
             </tbody>
         </table>
     </div>
+    <div class="card-footer fw-bold">
+        <p>Cantidad de clientes: @ListaClientes.Count</p>
+
+        <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+            <i class="bi bi-arrow-left"></i> Volver
+        </button>
+
+    </div>
 </div>
 
 @code {
@@ -145,5 +156,9 @@
             default:
                 break;
         }
+    }
+    public void Volver()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }

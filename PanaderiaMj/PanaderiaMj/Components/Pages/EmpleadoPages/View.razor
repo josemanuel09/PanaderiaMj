@@ -6,29 +6,39 @@
 <RadzenNotification />
 <PageTitle>Detalles del Empleado</PageTitle>
 <div class="container">
-    <div class="card shadow-lg">
+    <div class="card shadow-header">
         <!-- Header -->
         <div class="card-header">
             <h3><strong>Detalles del Empleado</strong></h3>
         </div>
-        <!-- Cuerpo -->
+        <!-- Body -->
         <div class="card-body">
             @if (empleado != null)
             {
                 <div class="row">
-                    <div class="col-8">
-                        <div class="col-md-11">
-                            <h3 class="text-center"><strong>Datos del Empleado</strong></h3>
-                            <div class="border-primmary border border-2 borde">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-9">
-                                            <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                                <li><strong>Empleado ID: @empleado.EmpleadoId</strong></li>
-                                                <li><strong>Nombre: @empleado.Nombre</strong></li>
-                                                <li><strong>Tel&eacute;fono: @empleado.Telefono</strong></li>
-                                                <li><strong>Direcci&oacute;n: @empleado.Direccion</strong></li>
-                                            </ul>
+                    <div class="col-md-6">
+                        <div class="card shadow-lg">
+                            <div class="card-header">
+                                <h3 class="text-center"><strong>Datos del Empleado</strong></h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="border-primary border-2 border-primmary">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4 text-center">
+                                                <img src="Images/empleado.png" class="img-fluid" alt="Venta">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                                    <li><strong>Empleado ID:</strong> @empleado.EmpleadoId</li>
+                                                    <li><strong>Nombre:</strong> @empleado.Nombre</li>
+                                                    <li><strong>C&eacute;dula</strong> @empleado.Cedula</li>
+                                                    <li><strong>Tel&eacute;fono:</strong> @empleado.Telefono</li>
+                                                    <li><strong>Fecha de Ingreso: </strong> @empleado.FechaIngreso</li>
+                                                    <li><strong>Direcci&oacute;n:</strong> @empleado.Direccion</li>
+                                                </ul>
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>

@@ -203,25 +203,9 @@
         if (!Guardado) { return; }
         InsumosList = await insumosService.Listar(t => true);
 
-        foreach (var InsumoAgregado in InsumosAgregados)
-        {
-            var insumo = InsumosList.FirstOrDefault(I => I.InsumoId == InsumoAgregado.InsumoId);
-            if (insumo != null)
-            {
-                insumo.CantidadDisponible -= InsumoAgregado.Cantidad;
-                await insumosService.Guardar(insumo);
-            }
-        }
+        
 
-        foreach (var InsumoEliminado in InsumosEliminados)
-        {
-            var insumo = InsumosList.FirstOrDefault(I => I.InsumoId == InsumoEliminado.InsumoId);
-            if (insumo != null)
-            {
-                insumo.CantidadDisponible += InsumoEliminado.Cantidad;
-                await insumosService.Guardar(insumo);
-            }
-        }
+        
         InsumosAgregados = new List<ComprasDetalle>();
         InsumosEliminados = new List<ComprasDetalle>();
 
@@ -238,10 +222,11 @@
 
     public void AgregarDetalle()
     {
-        if (compraDetalle.InsumoId != 0 && compraDetalle.Cantidad != 0 && compraDetalle.Precio != 0)
+        if (compraDetalle != null && compraDetalle.InsumoId != 0 && compraDetalle.Cantidad != 0 && compraDetalle.Precio != 0)
         {
             var Insumo = InsumosList.FirstOrDefault(i => i.InsumoId == compraDetalle.InsumoId);
-            if (Insumo != null && compraDetalle.Cantidad <= Insumo.CantidadDisponible)
+
+            if (Insumo != null)
             {
                 compra.ComprasDetalle.Add(compraDetalle);
                 compra.MontoTotal += compraDetalle.Cantidad * compraDetalle.Precio;
@@ -256,8 +241,6 @@
                     };
                 NotificationService.Notify(mensajeExito);
                 compraDetalle = new ComprasDetalle();
-                
-
             }
             else
             {
@@ -265,11 +248,10 @@
                     {
                         Severity = NotificationSeverity.Error,
                         Summary = "Error",
-                        Detail = "La cantidad solicitada supera la cantidad disponible del insumo.",
+                        Detail = "No se pudo encontrar el insumo seleccionado.",
                         Duration = 5000
                     };
                 NotificationService.Notify(mensajeError);
-                return;
             }
         }
         else
@@ -282,11 +264,12 @@
                     Duration = 5000
                 };
             NotificationService.Notify(mensajeError);
-            return;
         }
     }
 
+    
 
+    
     public void EliminarDetalle(ComprasDetalle detalle)
     {
         compra.ComprasDetalle.Remove(detalle);
@@ -304,7 +287,7 @@
     }
     public void Atras()
     {
-        navigationManager.NavigateTo("/MenuCompras");
+        navigationManager.NavigateTo("/IndexCompras");
     }
 
 

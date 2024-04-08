@@ -21,30 +21,53 @@
         <div class="row mt-3">
             <div class="col-3">
                 <label>Filtrar Por</label>
-                <select class="form-select">
-                    <option value="0" selected disabled>Seleccione</option>
-                    <option value="1">EmpleadoId</option>
+                <select @bind="Opcion" class="form-select">
+                    <option value="0">Todo</option>
+                    <option value="1">Empleado ID</option>
                     <option value="2">Nombre</option>
                 </select>
             </div>
-            <div class="col-3">
-                <label>ID/Nombre</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Ingrese ID o Nombre">
+            @if (Opcion == 1)
+            {
+                <div class="col-3">
+                    <label>ID</label>
+                    <div class="input-group">
+                        <input type="number" @bind="EmpleadosId" class="form-control" />
+                    </div>
                 </div>
+            }
+            else if (Opcion == 2)
+            {
+                <div class="col-3">
+                    <label>Nombre</label>
+                    <div class="input-group">
+                        <input type="text" @bind="Nombre" class="form-control" />
+                    </div>
+                </div>
+            }
+            <div class="col-3">
+                <label>Desde:</label>
+                <input type="date" @bind="Desde" class="form-control" />
             </div>
-            <div class="col-5">
-                <button type="button" @onclick="Buscar" class="btn btn-primary">
+            <div class="col-3">
+                <label>Hasta:</label>
+                <input type="date" @bind="Hasta" class="form-control" />
+            </div>
+            <div class="col-3">
+                <button type="button" @onclick="Buscar" class="btn btn-outline-primary mt-4">
                     <i class="bi bi-search"></i> Buscar
                 </button>
+                <a href="/CreateEmpleados" class="btn btn-outline-success mt-4 bi bi-plus-square">  Crear</a>
             </div>
         </div>
 
-        <table class="table mt-3">
+        <table class="table table-striped table-bordered mt-4">
             <thead>
                 <tr>
-                    <th scope="col" style="width: 160px;">Empleado Id</th>
+                    <th scope="col" style="width: 160px;">Empleado ID</th>
                     <th scope="col" style="width: 160px;">Nombre</th>
+                    <th scope="col" style="width: 160px;">C&eacute;dula</th>
+                    <th scope="col" style="width: 160px;">Fecha de Ingreso</th>
                     <th scope="col" style="width: 160px;">Tel&eacute;fono</th>
                     <th scope="col" style="width: 160px;">Direcci&oacute;n</th>
                     <th scope="col" style="width: 160px;">Ver</th>
@@ -58,6 +81,8 @@
                     <tr>
                         <td>@empleado.EmpleadoId</td>
                         <td>@empleado.Nombre</td>
+                        <td>@empleado.Cedula</td>
+                        <td>@empleado.FechaIngreso</td>
                         <td>@empleado.Telefono</td>
                         <td>@empleado.Direccion</td>
                         <td>
@@ -80,6 +105,14 @@
             </tbody>
         </table>
     </div>
+    <div class="card-footer fw-bold">
+        <p>Cantidad de Empleados: @ListaEmpleados.Count</p>
+
+        <button type="button" class="btn btn-outline-primary" @onclick="Volver">
+            <i class="bi bi-arrow-left"></i> Volver
+        </button>
+
+    </div>
 </div>
 
 @code {
@@ -87,32 +120,42 @@
     public int Opcion { get; set; } = 0;
     public int EmpleadosId { get; set; }
     public string Nombre { get; set; }
-   
+    public DateTime Desde { get; set; }
+    public DateTime Hasta { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        await CargarClientes();
+        await CargarEmpleados();
     }
 
-    public async Task CargarClientes()
+    public async Task CargarEmpleados()
     {
         ListaEmpleados = await empleadoService.Listar(t => true);
-        
+        Desde = DateTime.Now.AddMonths(-1);
+        Hasta = DateTime.Now;
     }
 
     public async Task Buscar()
     {
+        Hasta = new DateTime(Hasta.Year, Hasta.Month, Hasta.Day, 23, 59, 59);
 
         switch (Opcion)
         {
-           
+            case 0:
+                ListaEmpleados = await empleadoService.Listar(t => t.FechaIngreso >= Desde && t.FechaIngreso <= Hasta);
+                break;
             case 1:
-                ListaEmpleados = await empleadoService.Listar(t => t.EmpleadoId == EmpleadosId );
+                ListaEmpleados = await empleadoService.Listar(t => t.EmpleadoId == EmpleadosId && t.FechaIngreso >= Desde && t.FechaIngreso <= Hasta);
                 break;
             case 2:
-                ListaEmpleados = await empleadoService.Listar(t => t.Nombre.ToLower().Contains(Nombre.ToLower()));
+                ListaEmpleados = await empleadoService.Listar(t => t.Nombre.ToLower().Contains(Nombre.ToLower()) && t.FechaIngreso >= Desde && t.FechaIngreso <= Hasta);
                 break;
             default:
                 break;
         }
+    }
+    public void Volver()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }

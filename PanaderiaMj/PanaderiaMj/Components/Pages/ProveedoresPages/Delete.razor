@@ -17,38 +17,46 @@
         <div class="card-header">
             <h3 class="text-danger">¿Est&aacute;s seguro de que quieres eliminar el proveedor?</h3>
         </div>
-        <!-- Cuerpo -->
-        <div class="card-body">
+        <!-- Body -->
+        <div class="container">
             <div class="row">
-                <div class="col-8">
-                    <div class="col-md-11">
-                        <h3 class="text-center"><strong>Datos del Proveedor</strong></h3>
-                        <div class="border-primmary border border-2 borde">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                            <li><strong>ProveedorId: @proveedor.ProveedorId</strong></li>
-                                            <li><strong>Nombre: @proveedor.Nombre</strong></li>
-                                            <li><strong>Correo Electr&oacute;nico: @proveedor.Email</strong></li>
-                                            <li><strong>Tel&eacute;fono: @proveedor.Telefono</strong></li>
-                                            <li><strong>RNC: @proveedor.RNC</strong></li>
-                                            <li><strong>Tipo de Contribuyente: @proveedor.TipoContribuyente</strong></li>
-                                            <li><strong>Fecha de Creaci&oacute;n: @proveedor.Fecha</strong></li>
-                                            <li><strong>Direcci&oacute;n: @proveedor.Direccion</strong></li>
-                                        </ul>
+                <div class="col-md-6">
+                    <div class="card shadow-lg">
+                        <div class="card-header">
+                            <h3 class="text-center"><strong>Datos del proveedor</strong></h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="border-primary border-2 borde">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4 text-center">
+                                            <img src="Images/proveedor.png" class="img-fluid" alt="Proveedor">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <ul class="list-unstyled">
+                                                <li><strong>ProveedorId:</strong> @proveedor.ProveedorId</li>
+                                                <li><strong>Nombre:</strong> @proveedor.Nombre</li>
+                                                <li><strong>Correo Electr&oacute;nico:</strong> @proveedor.Email</li>
+                                                <li><strong>Tel&eacute;fono:</strong> @proveedor.Telefono</li>
+                                                <li><strong>RNC:</strong> @proveedor.RNC</li>
+                                                <li><strong>Tipo de Contribuyente:</strong> @proveedor.TipoContribuyente</li>
+                                                <li><strong>Fecha de Creaci&oacute;n:</strong> @proveedor.Fecha</li>
+                                                <li><strong>Direcci&oacute;n:</strong> @proveedor.Direccion</li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+               
             </div>
         </div>
         <!-- Footer -->
         <div class="card-footer">
             <button type="button" class="btn btn-outline-danger" @onclick="EliminarProveedor"><i class="bi bi-trash-fill"></i> Eliminar</button>
-            <a href="/IndexProveedor" class="btn btn-outline-primary"><i class="bi bi-box-arrow-left"></i> Volver</a>
+            <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
         </div>
     </div>
 </div>
@@ -102,6 +110,7 @@
                     Duration = 5000
                 };
             NotificationService.Notify(mensajeExito);
+            Volver();
         }
         else
         {

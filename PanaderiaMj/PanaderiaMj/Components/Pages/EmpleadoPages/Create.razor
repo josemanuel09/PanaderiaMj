@@ -1,8 +1,8 @@
 ﻿@page "/CreateEmpleados"
 @inject NavigationManager NavigationManager
-@inject IJSRuntime JSRuntime
 @inject EmpleadosService empleadosService
 @inject NotificationService NotificationService
+@inject IJSRuntime JSRuntime
 @rendermode InteractiveServer
 
 <RadzenNotification />
@@ -25,12 +25,6 @@
         </div>
         <div class="card-body">
             <div class="row">
-                @* <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="EmpleadoId">Empleado Id:</label>
-                        <input type="text" class="form-control" id="EmpleadoId" @bind="empleado.EmpleadoId" />
-                    </div>
-                </div> *@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="Nombre">Nombre:</label>
@@ -38,8 +32,6 @@
                         <ValidationMessage For="@(() => empleado.Nombre)" />
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="Direccion">Direcci&oacute;n:</label>
@@ -47,11 +39,27 @@
                         <ValidationMessage For="@(() => empleado.Direccion)" />
                     </div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="Telefono">Tel&eacute;fono:</label>
                         <input type="text" class="form-control" id="Telefono" @bind="empleado.Telefono" />
                         <ValidationMessage For="@(() => empleado.Telefono)" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Fecha">Fecha de Ingreso:</label>
+                        <input type="date" class="form-control" id="Fecha" @bind-value="empleado.FechaIngreso" />
+                        <ValidationMessage For="@(() => empleado.FechaIngreso)" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Cedula">C&eacute;dula:</label>
+                        <input type="text" class="form-control" id="Cedula" @bind="empleado.Cedula" />
+                        <ValidationMessage For="@(() => empleado.Cedula)" />
                     </div>
                 </div>
             </div>
@@ -60,10 +68,10 @@
             <button name="btNuevo" id="btNuevo" class="btn btn-primary mr-2" @onclick="Nuevo" type="button">
                 <span class="bi bi-plus-circle"></span> Nuevo
             </button>
-            <button name="btnGuardar" id="btnGuardar" class="btn btn-success mr-2" type="button">
-                <span class="bi bi-download" @onclick="Guardar"></span> Guardar
+            <button name="btnGuardar" id="btnGuardar" class="btn btn-success mr-2" type="button" @onclick="Guardar">
+                <span class="bi bi-download"></span> Guardar
             </button>
-            <button name="btnEliminar" id="btnEliminar" class="btn btn-secondary" @onclick="Atras" type="button">
+            <button name="btnEliminar" id="btnEliminar" class="btn btn-secondary" type="button" @onclick="Atras">
                 <span class="bi bi-arrow-left-square-fill"></span> Volver Atrás
             </button>
         </div>
@@ -71,53 +79,18 @@
 </EditForm>
 
 @code {
-    [Parameter]
-    public int EmpleadoId { get; set; }
     public Empleados empleado { get; set; } = new Empleados();
-    public string Mensaje = " ";
-    private bool Guardo = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        if (EmpleadoId > 0)
-        {
-            this.empleado.EmpleadoId = EmpleadoId;
-            await this.Buscar();
-        }
-
+        empleado.FechaIngreso = DateTime.Now;
     }
-    public async Task Buscar()
-    {
-        var clienteEncontrado = await empleadosService.Buscar(empleado.EmpleadoId);
-
-        if (clienteEncontrado != null)
-        {
-            this.empleado = clienteEncontrado;
-        }
-    }
-
 
     public async Task Guardar()
     {
-        var nombreExistente = await empleadosService.ValidarNombre(empleado.Nombre);
-        if (nombreExistente)
-        {
-            var mensaje = new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = "Error",
-                    Detail = "El nombre ya existe.",
-                    Duration = 5000
-                };
-            NotificationService.Notify(mensaje);
-            return;
-        }
-
-
-
-        // Guardar el cliente si pasa las validaciones
+        // Aquí puedes agregar la validación adicional si es necesario
         await empleadosService.Guardar(empleado);
-        Guardo = true;
+
         var mensajeExito = new NotificationMessage
             {
                 Severity = NotificationSeverity.Success,
@@ -126,7 +99,10 @@
                 Duration = 5000
             };
         NotificationService.Notify(mensajeExito);
+
+        Nuevo();
     }
+
     public void Nuevo()
     {
         empleado = new Empleados();
@@ -134,6 +110,6 @@
 
     void Atras()
     {
-        NavigationManager.NavigateTo("MenusEmpleados");
+        NavigationManager.NavigateTo("IndexEmpleados");
     }
 }

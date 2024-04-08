@@ -23,5 +23,7 @@ namespace PanaderiaMj.Models
         [Range(0, double.MaxValue, ErrorMessage = "El Precio no puede ser negativo")]
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "Este campo solo acepta números")]
         public double Precio { get; set; }
+
+        
     }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/DeleteProductos"
 @page "/DeleteProductos/{ProductoId:int}"
 @inject ProductosServices productosService
+@inject InsumosService insumosService
 @inject NavigationManager navigationManager
 @inject IJSRuntime IJSRuntime
 @inject NotificationService NotificationService
@@ -20,25 +21,58 @@
         <!-- Body -->
         <div class="card-body">
             <div class="row">
-                <div class="col-8">
-                    <div class="col-md-11">
-                        <h3 class="text-center"><strong>Datos del Producto</strong></h3>
-                        <div class="border-primary border border-2 border-primmary">
-                            <div class="card-body">
-                                <div class="row">
-                                    <!-- Columna para los datos del producto -->
-                                    <div class="col-12">
-                                        <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
-                                            <li><strong>ProductoId:</strong> @producto.ProductoId</li>
-                                            <li><strong>Nombre:</strong> @producto.Nombre</li>
-                                            <li><strong>Descripci&oacute;n:</strong> @producto.Descripcion</li>
-                                            <li><strong>Fecha de Creaci&oacute;n:</strong> @producto.FechaCreacion.ToShortDateString()</li>
-                                            <li><strong>Precio:</strong> @producto.PrecioProducto</li>
-                                            <li><strong>Cantidad a Producir:</strong> @producto.CantidadAProducir</li>
-                                            <li><strong>Nota:</strong> @producto.Nota</li>
-                                        </ul>
+                <div class="col-md-6">
+                    <div class="card shadow-lg">
+                        <div class="card-header">
+                            <h3 class="text-center"><strong>Datos del Producto</strong></h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="border-primary border-2 borde">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- Columna para los datos del producto -->
+                                        <div class="col-12">
+                                            <ul class="list-unstyled" style="margin-top: 20px; margin-bottom: 20px;">
+                                                <li><strong>ProductoId:</strong> @producto.ProductoId</li>
+                                                <li><strong>Nombre:</strong> @producto.Nombre</li>
+                                                <li><strong>Descripci&oacute;n:</strong> @producto.Descripcion</li>
+                                                <li><strong>Fecha de Creaci&oacute;n:</strong> @producto.FechaCreacion.ToShortDateString()</li>
+                                                <li><strong>Precio:</strong> @producto.PrecioProducto</li>
+                                                <li><strong>Cantidad a Producir:</strong> @producto.CantidadAProducir</li>
+                                                <li><strong>Nota:</strong> @producto.Nota</li>
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-lg">
+                        <div class="card-header">
+                            <h3 class="text-center"><strong>Detalle del producto</strong></h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Insumo</th>
+                                            <th>Cantidad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var detalle in producto.ProductosDetalle)
+                                        {
+                                            var insumo = InsumosList.FirstOrDefault(i => i.InsumoId == detalle.InsumoId);
+                                            <tr>
+                                                <td>@(insumo != null ? insumo.Nombre : "No encontrado")</td>
+                                                <td>@detalle.Cantidad</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -57,12 +91,14 @@
     [Parameter]
     public int ProductoId { get; set; }
     public Productos producto { get; set; } = new Productos();
+    public List<Insumos> InsumosList { get; set; } = new List<Insumos>();
 
     protected override async Task OnInitializedAsync()
     {
         if (ProductoId > 0)
         {
             producto = await productosService.GetProductos(ProductoId);
+            InsumosList = await insumosService.Listar(t => true);
         }
     }
 
