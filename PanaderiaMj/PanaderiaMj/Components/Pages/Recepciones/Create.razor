@@ -48,6 +48,19 @@
                         <InputDate @bind-Value="recepcion.Fecha" class="form-control" />
                         <ValidationMessage For="@(() => recepcion.Fecha)" />
                     </div>
+                    <div class="form-group">
+                        <label>Direcci&oacute;n:</label>
+                        <InputText @bind-Value="recepcion.Direccion" class="form-control" />
+                        <ValidationMessage For="@(() => recepcion.Direccion)" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Tel&eacute;fono:</label>
+                        <InputText @bind-Value="recepcion.Telefono" class="form-control" />
+                        <ValidationMessage For="@(() => recepcion.Telefono)" />
+                    </div>
+                   
                 </div>
 
             </div>
@@ -110,11 +123,20 @@
         }
 
         await recepcionesService.Guardar(recepcion);
+        var mensajeExito = new NotificationMessage
+            {
+                Severity = NotificationSeverity.Success,
+                Summary = "Éxito",
+                Detail = "La recepción se guardó exitosamente.",
+                Duration = 5000
+            };
+
+        NotificationService.Notify(mensajeExito);
         Guardo = true;
     }
 
     void Atras()
     {
-        Navigation.NavigateTo("/MenuRecepciones");
+        Navigation.NavigateTo("/IndexRecepciones");
     }
 }
