@@ -5,6 +5,8 @@
 @inject IJSRuntime ijsRuntime
 @inject NotificationService notificationService
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <PageTitle>Eliminar Cliente</PageTitle>
 

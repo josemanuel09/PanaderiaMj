@@ -4,6 +4,7 @@
 @inject NavigationManager navigationManager
 @inject ProveedoresService proveedoresService
 
+@attribute [Authorize(Roles = "Admin")]
 @inject IJSRuntime jsRuntime
 @rendermode InteractiveServer
 

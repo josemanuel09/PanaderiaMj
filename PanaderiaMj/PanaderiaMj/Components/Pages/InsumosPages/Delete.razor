@@ -6,6 +6,8 @@
 @inject IJSRuntime jsRuntime
 @inject NotificationService notificationService
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <RadzenNotification />
 <PageTitle>Eliminar Insumo</PageTitle>

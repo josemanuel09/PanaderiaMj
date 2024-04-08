@@ -3,6 +3,8 @@
 @inject NavigationManager navigationManager
 @inject NotificationService notificationService
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <RadzenNotification />
 <PageTitle>Eliminar Empleado</PageTitle>

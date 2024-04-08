@@ -4,6 +4,8 @@
 @inject NavigationManager navigationManager
 @inject IJSRuntime jsRuntime
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <PageTitle>Detalles de Proveedor</PageTitle>
 

@@ -2,6 +2,8 @@
 @inject EmpleadosService empleadosService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin")]
+
 
 <RadzenNotification />
 <PageTitle>Detalles del Empleado</PageTitle>
