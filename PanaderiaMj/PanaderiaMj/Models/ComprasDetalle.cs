@@ -24,9 +24,6 @@ namespace PanaderiaMj.Models
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "Este campo solo acepta números")]
         public double Precio { get; set; }
 
-        [Required(ErrorMessage = "El Campo Monto es obligatorio")]
-        [Range(0, double.MaxValue, ErrorMessage = "El Monto no puede ser negativo")]
-        [RegularExpression(@"^[0-9]+$", ErrorMessage = "Este campo solo acepta números")]
-        public double Monto { get; set; }
+        
     }
 }
